@@ -11,28 +11,34 @@
 <body>
 
 <div class="container" >
-  <h2>Vertical (basic) form</h2>
-  <form action="/action_page.php">
+  <h2>Get Account</h2>
+  <form action="{% url 'new_user' %}" method="POST">
+    {% csrf_token %}
     <div class="form-group">
-      <label for="login">Login:</label>
-      <input type="text" class="form-control" id="login" placeholder="Enter unique name" name="login">
+      <label for="{{ form.login.id_for_label }}">Login:</label>
+      {{ form.login }}
+      {{ form.login.errors }}
     </div>
     <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+      <label for="{{ form.email.id_for_label }}">Email:</label>
+      {{ form.email }}
+      {{ form.email.errors }}
     </div>
     <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+      <label for="{{ form.password.id_for_label }}">Password:</label>
+      {{ form.password }}
+      {{ form.password.errors }}
     </div>
     <div class="form-group">
-      <label for="rpassword">Repeat password:</label>
-      <input type="password" class="form-control" id="rpassword" placeholder="Repeat password" name="rpassword">
+      <label for="{{ form.rpassword.id_for_label }}">Repeat password:</label>
+      {{ form.rpassword }}
+      {{ form.rpassword.errors }}
     </div>
     <div class="checkbox">
       <label><input type="checkbox" name="remember"> Accept <a href="" style="color: rgb(41, 41, 41);">privacy</a></label>
     </div>
     <button type="submit" class="btn btn-default">Submit</button>
+    <button type="reset" class="btn btn-default">Reset</button>
   </form>
 </div>
 

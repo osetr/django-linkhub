@@ -1,4 +1,20 @@
 from django.shortcuts import render
+from .forms import UserForm
+from .models import User
+from django.views.generic import View
+from django.shortcuts import redirect
 
-def AddUser(request):
-    return render(request, 'new_user.html')
+
+class AddUser(View):
+    def get(self, request):
+        form = UserForm()
+        return render(request, "new_user.html", context={"form": form})
+
+    def post(self, request):
+        form = UserForm(request.POST)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.password = 'qwe'
+            new_user.save()
+            return redirect("new_user")
+        return render(request, "new_user.html", context={"form": form})

@@ -7,17 +7,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_auto_20200826_1644'),
+        ("users", "0003_auto_20200826_1644"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='user',
-            name='rpassword',
-        ),
+        migrations.RemoveField(model_name="user", name="rpassword",),
         migrations.AlterField(
-            model_name='user',
-            name='date_time',
-            field=models.DateTimeField(default=datetime.datetime(2020, 8, 26, 17, 21, 40, 937815), editable=False),
+            model_name="user",
+            name="date_time",
+            field=models.DateTimeField(
+                default=datetime.datetime(2020, 8, 26, 17, 21, 40, 937815),
+                editable=False,
+            ),
         ),
     ]

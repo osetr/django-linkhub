@@ -7,25 +7,28 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/login_user.css' %}">
 </head>
 <body>
 
 <div class="container" >
-  <h2>Get Account</h2>
+  <h2>Log in</h2>
   <form action="{% url 'login_user' %}" method="POST">
     {% csrf_token %}
     {% for field in form %}
       <div class="form-group">
         <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
         {{ field }}
-        {% if field.errors %}
-        <br>
-        <div class="alert alert-danger">
-          {{field.errors}}
-        </div>
-        {% endif %}
       </div>
     {% endfor %}
+    {% if errors %}
+    {% for error in errors %}
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+    {% endfor %}
+    {% endif %}
     <button type="submit" class="btn btn-default">Login</button>
   </form>
 </div>

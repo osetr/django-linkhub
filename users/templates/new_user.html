@@ -17,6 +17,7 @@
     {% for field in form %}
       <div class="form-group">
         <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+        {{ field.label }}
         {{ field }}
         {% if field.errors %}
         <br>
@@ -26,7 +27,7 @@
         {% endif %}
       </div>
     {% endfor %}
-    
+
     <div class="checkbox">
       <label><input type="checkbox" name="remember"> Accept <a href="" style="color: rgb(41, 41, 41);">privacy</a></label>
     </div>

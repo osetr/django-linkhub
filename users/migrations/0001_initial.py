@@ -8,18 +8,42 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('login', models.CharField(max_length=20, unique=True, verbose_name="user's login")),
-                ('email', models.EmailField(max_length=254, verbose_name="users'email")),
-                ('password', models.CharField(max_length=120, verbose_name="user's password")),
-                ('date_time', models.DateTimeField(default=datetime.datetime(2020, 8, 26, 15, 45, 23, 592995), editable=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "login",
+                    models.CharField(
+                        max_length=20, unique=True, verbose_name="user's login"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(max_length=254, verbose_name="users'email"),
+                ),
+                (
+                    "password",
+                    models.CharField(max_length=120, verbose_name="user's password"),
+                ),
+                (
+                    "date_time",
+                    models.DateTimeField(
+                        default=datetime.datetime(2020, 8, 26, 15, 45, 23, 592995),
+                        editable=False,
+                    ),
+                ),
             ],
         ),
     ]

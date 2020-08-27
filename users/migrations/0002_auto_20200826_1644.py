@@ -7,23 +7,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='rpassword',
-            field=models.CharField(default=None, max_length=120, verbose_name='user repeat password'),
+            model_name="user",
+            name="rpassword",
+            field=models.CharField(
+                default=None, max_length=120, verbose_name="user repeat password"
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='date_time',
-            field=models.DateTimeField(default=datetime.datetime(2020, 8, 26, 16, 44, 34, 452738), editable=False),
+            model_name="user",
+            name="date_time",
+            field=models.DateTimeField(
+                default=datetime.datetime(2020, 8, 26, 16, 44, 34, 452738),
+                editable=False,
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='email',
-            field=models.EmailField(max_length=254, unique=True, verbose_name="users'email"),
+            model_name="user",
+            name="email",
+            field=models.EmailField(
+                max_length=254, unique=True, verbose_name="users'email"
+            ),
         ),
     ]

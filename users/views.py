@@ -7,7 +7,6 @@ from django.contrib.auth import login, authenticate
 
 
 class AddUser(View):
-    
     def get(self, request):
         form = UserAddForm()
         return render(request, "new_user.html", context={"form": form})
@@ -21,11 +20,25 @@ class AddUser(View):
 
 
 class LoginUser(View):
-    
     def get(self, request):
         form = UserLoginForm()
         return render(request, "login_user.html", context={"form": form})
 
     def post(self, request):
         form = UserLoginForm(request.POST)
-        return render(request, "login_user.html", context={"form": form})
+        errors = []
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if not user.is_active:
+                errors.append("Your account has been deactivated")
+            else:
+                login(request, user)
+                return render(request, "main")
+        else:
+            errors.append("Incorrect username or password")
+        return render(
+            request, "login_user.html", context={"form": form, 
+                                                 "errors": errors}
+        )

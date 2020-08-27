@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 
 
 class AddUser(View):
+    
     def get(self, request):
         form = UserForm()
         return render(request, "new_user.html", context={"form": form})
@@ -13,8 +14,6 @@ class AddUser(View):
     def post(self, request):
         form = UserForm(request.POST)
         if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.password = 'qwe'
-            new_user.save()
+            form.save()
             return redirect("new_user")
         return render(request, "new_user.html", context={"form": form})

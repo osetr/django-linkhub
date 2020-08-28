@@ -26,6 +26,7 @@ class UserAddForm(SignupForm):
         )
 
 
+
 class UserLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,3 +36,4 @@ class UserLoginForm(LoginForm):
         self.fields["password"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter password"}
         )
+        

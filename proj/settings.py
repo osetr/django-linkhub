@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     "users",
     "home",
 ]
@@ -80,8 +81,6 @@ STATICFILES_DIRS = (
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = 'main'
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -90,11 +89,13 @@ USE_I18N = True
 
 USE_L10N = True
 
-ACCOUNT_EMAIL_REQUIRED = True
-
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-
-
 USE_TZ = True
 
 STATIC_URL = "/static/"
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_LOGOUT_REDIRECT_URL = "login_user"
+
+LOGIN_REDIRECT_URL = 'main'
+

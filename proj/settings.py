@@ -17,12 +17,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'django.contrib.sites',
+    "users",
+    "home",
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    "users",
-    "home",
 ]
 
 
@@ -41,7 +41,7 @@ ROOT_URLCONF = "proj.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'accounts')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

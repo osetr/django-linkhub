@@ -1,4 +1,6 @@
-from allauth.account.forms import SignupForm, LoginForm
+from allauth.account.forms import (
+    SignupForm, LoginForm, 
+    ChangePasswordForm)
 from django import forms
 
 
@@ -36,4 +38,3 @@ class UserLoginForm(LoginForm):
         self.fields["password"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter password"}
         )
-        

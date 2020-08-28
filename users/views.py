@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from .forms import UserAddForm, UserLoginForm
+from .forms import UserAddForm, UserLoginForm, ChangePasswordForm
 from .models import User
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate
-from allauth.account.views import LoginView
+from allauth.account.views import LoginView, PasswordChangeView
 
 
 class AddUser(View):
@@ -43,3 +43,7 @@ class LoginUser(LoginView):
             request, "login_user.html", context={"form": form, 
                                                  "errors": errors}
         )
+
+
+class ChangePassword(PasswordChangeView):
+    pass

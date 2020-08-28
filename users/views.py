@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import UserAddForm, UserLoginForm, ChangePasswordForm
+from .forms import UserAddForm, UserLoginForm, ChangePasswordCustomizedForm
 from .models import User
 from django.views.generic import View
 from django.shortcuts import redirect
@@ -46,4 +46,10 @@ class LoginUser(LoginView):
 
 
 class ChangePassword(PasswordChangeView):
-    pass
+    def get_success_url(self):
+        return '/home'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_class = ChangePasswordCustomizedForm
+

@@ -16,7 +16,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     "users",
+    "home",
 ]
 
 
@@ -73,6 +78,10 @@ STATICFILES_DIRS = (
     '/var/www/static/',
 )
 
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = 'main'
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -80,6 +89,11 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_L10N = True
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
 
 USE_TZ = True
 

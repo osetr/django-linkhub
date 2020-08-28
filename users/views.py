@@ -4,6 +4,7 @@ from .models import User
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate
+from allauth.account.views import LoginView
 
 
 class AddUser(View):
@@ -14,12 +15,12 @@ class AddUser(View):
     def post(self, request):
         form = UserAddForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(request)
             return redirect("login_user")
         return render(request, "new_user.html", context={"form": form})
 
 
-class LoginUser(View):
+class LoginUser(LoginView):
     def get(self, request):
         form = UserLoginForm()
         return render(request, "login_user.html", context={"form": form})
@@ -27,7 +28,7 @@ class LoginUser(View):
     def post(self, request):
         form = UserLoginForm(request.POST)
         errors = []
-        username = request.POST["username"]
+        username = request.POST["login"]
         password = request.POST["password"]
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -35,7 +36,7 @@ class LoginUser(View):
                 errors.append("Your account has been deactivated")
             else:
                 login(request, user)
-                return render(request, "main")
+                return redirect("main")
         else:
             errors.append("Incorrect username or password")
         return render(

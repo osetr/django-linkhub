@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'main' %}">MySite</a>
+    </div>
+    <ul class="nav navbar-nav">
+      {% if active_page == "home" %}
+      <li class="active"><a href="{% url 'main' %}">Home</a></li>
+      {% else %}
+      <li><a href="{% url 'main' %}">Home</a></li>
+      {% endif %}
+      {% if not user_authenticated %}
+      {% if active_page == "login_user" %}
+      <li class="active"><a href="{% url 'login_user' %}">Sing in</a></li>
+      {% else %}
+      <li><a href="{% url 'login_user' %}">Sing in</a></li>
+      {% endif %}
+      {% endif %}
+      {% if active_page == "new_user" %}
+      <li class="active"><a href="{% url 'new_user' %}">Sign up</a></li>
+      {% else %}
+      <li><a href="{% url 'new_user' %}">Sign up</a></li>
+      {% endif %}
+      {% if user_authenticated %}
+      {% if active_page == "change_password" %}
+      <li class="active"><a href="{% url 'change_pass' %}">Change password</a></li>
+      {% else %}
+      <li><a href="{% url 'change_pass' %}">Change password</a></li>
+      {% endif %}
+      <li class="float-right"><a href="{% url 'logout' %}">Logout</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+{% block content %}
+
+{% endblock %}
+
+</body>
+</html>

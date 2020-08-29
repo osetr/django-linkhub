@@ -6,7 +6,10 @@ from django.shortcuts import redirect
 
 class Home(View):
     def get(self, request):
-        return render(request, "home.html")
+        user_authenticated = request.user.is_authenticated
+        return render(request, "home.html", 
+            context={'user_authenticated': user_authenticated,
+                     'active_page': "home"})
 
 def logout_view(request):
     logout(request)

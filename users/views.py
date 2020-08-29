@@ -10,20 +10,27 @@ from allauth.account.views import LoginView, PasswordChangeView
 class AddUser(View):
     def get(self, request):
         form = UserAddForm()
-        return render(request, "new_user.html", context={"form": form})
+        user_authenticated = request.user.is_authenticated
+        return render(request, "new_user.html", context={"form": form,
+                                                         "user_authenticated": user_authenticated,
+                                                         "active_page": "new_user"})
 
     def post(self, request):
         form = UserAddForm(request.POST)
+        user_authenticated = request.user.is_authenticated
         if form.is_valid():
             form.save(request)
             return redirect("login_user")
-        return render(request, "new_user.html", context={"form": form})
+        return render(request, "new_user.html", context={"form": form,
+                                                         "user_authenticated": user_authenticated,
+                                                         "active_page": "new_user"})
 
 
 class LoginUser(LoginView):
     def get(self, request):
         form = UserLoginForm()
-        return render(request, "login_user.html", context={"form": form})
+        return render(request, "login_user.html", context={"form": form,
+                                                           "active_page": "login_user"})
 
     def post(self, request):
         form = UserLoginForm(request.POST)
@@ -41,7 +48,8 @@ class LoginUser(LoginView):
             errors.append("Incorrect username or password")
         return render(
             request, "login_user.html", context={"form": form, 
-                                                 "errors": errors}
+                                                 "errors": errors,
+                                                 "active_page": "login_user"}
         )
 
 
@@ -53,3 +61,10 @@ class ChangePassword(PasswordChangeView):
         super().__init__(*args, **kwargs)
         self.form_class = ChangePasswordCustomizedForm
 
+    def render_to_response(self, context, **response_kwargs):
+        user_authenticated = self.request.user.is_authenticated
+        if not self.request.user.has_usable_password():
+            return HttpResponseRedirect(reverse('account_set_password'))
+        context.update({"user_authenticated": user_authenticated, "active_page": "change_password"})
+        return super(PasswordChangeView, self).render_to_response(
+            context, **response_kwargs)

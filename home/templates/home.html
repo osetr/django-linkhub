@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
+{% extends "base.html" %}
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="">MySite</a>
-    </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="">Home</a></li>
-      <li><a href="{% url 'login_user' %}">Sing in</a></li>
-      <li><a href="{% url 'new_user' %}">Sign up</a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
-      <li><a href="{% url 'change_pass' %}">Change password</a></li>
-    </ul>
-  </div>
-</nav>
-  
+
+{% block content %}
 <div class="container">
-  <h3>Hello World</h3>
+  <h3>Hello World {{ parametr }}</h3>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
         sed do eiusmod tempor incididunt ut labore et dolore 
         magna aliqua. Vehicula ipsum a arcu cursus vitae congue 
@@ -52,8 +29,5 @@
                pulvinar elementum integer enim neque volutpat ac.
                 Nascetur ridiculus mus mauris vitae ultricies leo integer
                 . A scelerisque purus semper eget.</p>
-
 </div>
-
-</body>
-</html>
+{% endblock %}

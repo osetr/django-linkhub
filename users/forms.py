@@ -1,6 +1,6 @@
 from allauth.account.forms import (
     SignupForm, LoginForm, 
-    ChangePasswordForm)
+    ChangePasswordForm, SetPasswordForm)
 from django import forms
 
 
@@ -39,12 +39,24 @@ class UserLoginForm(LoginForm):
             {"class": "form-control", "placeholder": "Enter password"}
         )
 
+
 class ChangePasswordCustomizedForm(ChangePasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["oldpassword"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter current password"}
         )
+        self.fields["password1"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter password"}
+        )
+        self.fields["password2"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Repeat password"}
+        )
+
+
+class SetPasswordCustomizedForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.fields["password1"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter password"}
         )

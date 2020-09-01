@@ -4,14 +4,16 @@ from .forms import (
     SignUpForm,
     ChangePasswordCustomForm,
     SetPasswordCustomForm,
+    ResetPasswordCustomForm,
+    ResetPasswordKeyCustomForm
 )
 from .models import User
 from django.views.generic import View
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate
-from allauth.account.views import LoginView, PasswordChangeView, PasswordSetView
+from allauth.account.views import *
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 
 class SignUpView(View):
@@ -111,3 +113,17 @@ class SetPasswordView(PasswordSetView):
         return super(PasswordSetView, self).render_to_response(
             context, **response_kwargs
         )
+
+
+class ResetPasswordView(PasswordResetView):
+    form_class = ResetPasswordCustomForm
+    # success_url = reverse_lazy("")
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        user_authenticated = self.request.user.is_authenticated
+        ret.update({"user_authenticated": user_authenticated, "active_page": "reset_password"})
+        return ret
+
+
+class ResetPasswordFromKeyView(PasswordResetFromKeyView):
+    form_class = ResetPasswordKeyCustomForm

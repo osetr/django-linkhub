@@ -3,6 +3,8 @@ from allauth.account.forms import (
     LoginForm,
     ChangePasswordForm,
     SetPasswordForm,
+    ResetPasswordForm,
+    ResetPasswordKeyForm,
 )
 from django import forms
 
@@ -52,6 +54,26 @@ class ChangePasswordCustomForm(ChangePasswordForm):
 
 
 class SetPasswordCustomForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["password1"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter password"}
+        )
+        self.fields["password2"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Repeat password"}
+        )
+
+
+class ResetPasswordCustomForm(ResetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"].label = "Email"
+        self.fields["email"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Enter email"}
+        )
+
+
+class ResetPasswordKeyCustomForm(ResetPasswordKeyForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["password1"].widget.attrs.update(

@@ -1,9 +1,12 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-SECRET_KEY = "l2pw-h(@fmt#t+=&@app0)fi+clhmwt%s6u2c%(&2+sjc3b(e_"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
 
@@ -105,3 +108,10 @@ ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 LOGIN_REDIRECT_URL = "home_n"
 
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sprt.hlpr@gmail.com'
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD") 

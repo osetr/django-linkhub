@@ -32,6 +32,11 @@
       {% else %}
       <li><a href="{% url 'sign_up_n' %}">Sign up</a></li>
       {% endif %}
+      {% if active_page == "reset_password" %}
+      <li class="active"><a href="{% url 'reset_password_n' %}">Forgot password</a></li>
+      {% else %}
+      <li><a href="{% url 'reset_password_n' %}">Forgot password</a></li>
+      {% endif %}
       {% endif %}
       {% if user_authenticated %}
       {% if active_page == "change_password" %}

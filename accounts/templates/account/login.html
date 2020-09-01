@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% load socialaccount %}
+{% block content %}
+<div class="container" >
+  <h2>Log in</h2>
+  <form action="{% url 'sign_in_n' %}" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+        {{ field }}
+      </div>
+    {% endfor %}
+    {% if errors %}
+    {% for error in errors %}
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <button type="submit" class="btn btn-default">Login</button>
+    <a href="{% provider_login_url 'google' %}"><button type="button" class="btn btn-default">With Google</button></a>
+  </form>
+</div>
+{% endblock %}

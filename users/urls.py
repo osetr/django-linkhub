@@ -8,20 +8,17 @@ urlpatterns = [
     path("set_password/", SetPasswordView.as_view(), name="set_password_n"),
     path("reset_password/", ResetPasswordView.as_view(), name="reset_password_n"),
 
+    path(
+        "confirm-email/",
+        VerificationEmailSentView.as_view(),
+        name="account_email_verification_sent",
+    ),
+    re_path(
+        r"^confirm-email/(?P<key>[-:\w]+)/$",
+        ConfirmEmailView.as_view(),
+        name="account_confirm_email",
+    ),
 
-    # # E-mail
-    # path("email/", email, name="account_email"),
-    # path(
-    #     "confirm-email/",
-    #     email_verification_sent,
-    #     name="account_email_verification_sent",
-    # ),
-    # re_path(
-    #     r"^confirm-email/(?P<key>[-:\w]+)/$",
-    #     confirm_email,
-    #     name="account_confirm_email",
-    # ),
-    # password reset
     path(
         "password_reset_done/", ResetPasswordDoneView.as_view(), name="reset_password_done_n"
     ),

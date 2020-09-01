@@ -117,3 +117,12 @@ class ResetPasswordFromKeyView(PasswordResetFromKeyView):
 
 class ResetPasswordFromKeyDoneView(PasswordResetFromKeyDoneView):
     pass
+
+
+class VerificationEmailSentView(EmailVerificationSentView):
+    pass
+
+
+class ConfirmEmailView(ConfirmEmailView):
+    pass
+    

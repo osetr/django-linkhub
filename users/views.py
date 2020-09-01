@@ -5,7 +5,7 @@ from .forms import (
     ChangePasswordCustomForm,
     SetPasswordCustomForm,
     ResetPasswordCustomForm,
-    ResetPasswordKeyCustomForm
+    ResetPasswordKeyCustomForm,
 )
 from .models import User
 from django.views.generic import View
@@ -18,16 +18,17 @@ from django.urls import reverse, reverse_lazy
 
 class SignUpView(SignupView):
     form_class = SignUpForm
+
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        ret.update({"user_authenticated": user_authenticated,
-                    "active_page": "sign_up"})
+        ret.update({"user_authenticated": user_authenticated, "active_page": "sign_up"})
         return ret
 
 
 class SignInView(LoginView):
     form_class = SignInForm
+
     def get_context_data(self, **kwargs):
         errors = []
         if self.request.method == "POST":
@@ -44,9 +45,13 @@ class SignInView(LoginView):
                 errors.append("Incorrect username or password")
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        ret.update({"user_authenticated": user_authenticated,
-                    "active_page": "sign_in",
-                    "errors": errors})
+        ret.update(
+            {
+                "user_authenticated": user_authenticated,
+                "active_page": "sign_in",
+                "errors": errors,
+            }
+        )
         return ret
 
 
@@ -90,12 +95,25 @@ class SetPasswordView(PasswordSetView):
 
 class ResetPasswordView(PasswordResetView):
     form_class = ResetPasswordCustomForm
+    success_url = reverse_lazy("reset_password_done_n")
+
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        ret.update({"user_authenticated": user_authenticated, "active_page": "reset_password"})
+        ret.update(
+            {"user_authenticated": user_authenticated, "active_page": "reset_password"}
+        )
         return ret
+
+
+class ResetPasswordDoneView(PasswordResetDoneView):
+    pass
 
 
 class ResetPasswordFromKeyView(PasswordResetFromKeyView):
     form_class = ResetPasswordKeyCustomForm
+    success_url = reverse_lazy("reset_password_from_key_done_n")
+    
+
+class ResetPasswordFromKeyDoneView(PasswordResetFromKeyDoneView):
+    pass

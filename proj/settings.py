@@ -16,13 +16,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django.contrib.sites',
+    "django.contrib.sites",
     "users",
     "home",
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 
@@ -41,7 +41,10 @@ ROOT_URLCONF = "proj.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'accounts')],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "templates", "accounts"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -76,7 +79,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
-    '/var/www/static/',
+    "/var/www/static/",
 )
 
 SITE_ID = 1
@@ -95,10 +98,10 @@ STATIC_URL = "/static/"
 
 ACCOUNT_EMAIL_REQUIRED = True
 
-ACCOUNT_LOGOUT_REDIRECT_URL = "main"
+ACCOUNT_LOGOUT_REDIRECT_URL = "home_n"
 
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 
-LOGIN_REDIRECT_URL = 'main'
+LOGIN_REDIRECT_URL = "home_n"
 
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5

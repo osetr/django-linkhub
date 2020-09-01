@@ -1,17 +1,15 @@
 from allauth.account.forms import (
-    SignupForm, LoginForm, 
-    ChangePasswordForm, SetPasswordForm)
+    SignupForm,
+    LoginForm,
+    ChangePasswordForm,
+    SetPasswordForm,
+)
 from django import forms
 
 
-class UserAddForm(SignupForm):
+class SignUpForm(SignupForm):
     def __init__(self, *args, **kwargs):
-        self.field_order = [
-                'username',
-                'email',
-                'password1',
-                'password2'
-            ]
+        self.field_order = ["username", "email", "password1", "password2"]
         super().__init__(*args, **kwargs)
         self.fields["username"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter unique name"}
@@ -19,7 +17,7 @@ class UserAddForm(SignupForm):
         self.fields["email"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter email"}
         )
-        self.fields['email'].label = "Email"
+        self.fields["email"].label = "Email"
         self.fields["password1"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter password"}
         )
@@ -28,8 +26,7 @@ class UserAddForm(SignupForm):
         )
 
 
-
-class UserLoginForm(LoginForm):
+class SignInForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["login"].widget.attrs.update(
@@ -40,7 +37,7 @@ class UserLoginForm(LoginForm):
         )
 
 
-class ChangePasswordCustomizedForm(ChangePasswordForm):
+class ChangePasswordCustomForm(ChangePasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["oldpassword"].widget.attrs.update(
@@ -54,7 +51,7 @@ class ChangePasswordCustomizedForm(ChangePasswordForm):
         )
 
 
-class SetPasswordCustomizedForm(SetPasswordForm):
+class SetPasswordCustomForm(SetPasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["password1"].widget.attrs.update(

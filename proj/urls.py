@@ -3,8 +3,8 @@ from django.urls import path, include
 from users.views import *
 
 urlpatterns = [
-    path("admin/", admin.site.urls), 
-    path('accounts/', include('allauth.urls')),
-    path("users/", include("users.urls")),
-    path("home/", include("home.urls")),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
+    path("", include("users.urls")),
+    path("", include("home.urls")),
 ]

@@ -13,33 +13,33 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="{% url 'main' %}">MySite</a>
+      <a class="navbar-brand" href="{% url 'home_n' %}">MySite</a>
     </div>
     <ul class="nav navbar-nav">
       {% if active_page == "home" %}
-      <li class="active"><a href="{% url 'main' %}">Home</a></li>
+      <li class="active"><a href="{% url 'home_n' %}">Home</a></li>
       {% else %}
-      <li><a href="{% url 'main' %}">Home</a></li>
+      <li><a href="{% url 'home_n' %}">Home</a></li>
       {% endif %}
       {% if not user_authenticated %}
-      {% if active_page == "login_user" %}
-      <li class="active"><a href="{% url 'login_user' %}">Sing in</a></li>
+      {% if active_page == "sign_in" %}
+      <li class="active"><a href="{% url 'sign_in_n' %}">Sing in</a></li>
       {% else %}
-      <li><a href="{% url 'login_user' %}">Sing in</a></li>
+      <li><a href="{% url 'sign_in_n' %}">Sing in</a></li>
       {% endif %}
-      {% endif %}
-      {% if active_page == "new_user" %}
-      <li class="active"><a href="{% url 'new_user' %}">Sign up</a></li>
+      {% if active_page == "sign_up" %}
+      <li class="active"><a href="{% url 'sign_up_n' %}">Sign up</a></li>
       {% else %}
-      <li><a href="{% url 'new_user' %}">Sign up</a></li>
+      <li><a href="{% url 'sign_up_n' %}">Sign up</a></li>
+      {% endif %}
       {% endif %}
       {% if user_authenticated %}
       {% if active_page == "change_password" %}
-      <li class="active"><a href="{% url 'change_pass' %}">Change password</a></li>
+      <li class="active"><a href="{% url 'change_password_n' %}">Change password</a></li>
       {% else %}
-      <li><a href="{% url 'change_pass' %}">Change password</a></li>
+      <li><a href="{% url 'change_password_n' %}">Change password</a></li>
       {% endif %}
-      <li class="float-right"><a href="{% url 'logout' %}">Logout</a></li>
+      <li class="float-right"><a href="{% url 'logout_n' %}">Logout</a></li>
       {% endif %}
     </ul>
   </div>

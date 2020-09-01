@@ -4,13 +4,16 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 
 
-class Home(View):
+class HomeView(View):
     def get(self, request):
         user_authenticated = request.user.is_authenticated
-        return render(request, "home.html", 
-            context={'user_authenticated': user_authenticated,
-                     'active_page': "home"})
+        return render(
+            request,
+            "home.html",
+            context={"user_authenticated": user_authenticated, "active_page": "home"},
+        )
 
-def logout_view(request):
+
+def LogOutView(request):
     logout(request)
-    return redirect("main")
+    return redirect("home_n")

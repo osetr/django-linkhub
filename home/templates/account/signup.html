@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container" >
   <h2>Get Account</h2>
-  <form action="{% url 'sign_in_n' %}" method="POST">
+  <form action="{% url 'sign_up_n' %}" method="POST">
     {% csrf_token %}
     {% for field in form %}
       <div class="form-group">
@@ -20,7 +20,7 @@
     {% endfor %}
 
     <div class="checkbox">
-      <label><input type="checkbox" required name="remember"> Accept <a href="" style="color: rgb(41, 41, 41);">privacy</a></label>
+      <label><input type="checkbox" name="remember"> Accept <a href="" style="color: rgb(41, 41, 41);">privacy</a></label>
     </div>
     <button type="submit" class="btn btn-default">Submit</button>
     <button type="reset" class="btn btn-default">Reset</button>

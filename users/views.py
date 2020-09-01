@@ -16,65 +16,38 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 
 
-class SignUpView(View):
-    def get(self, request):
-        form = SignUpForm()
-        user_authenticated = request.user.is_authenticated
-        return render(
-            request,
-            "new_user.html",
-            context={
-                "form": form,
-                "user_authenticated": user_authenticated,
-                "active_page": "sign_up",
-            },
-        )
-
-    def post(self, request):
-        form = SignUpForm(request.POST)
-        user_authenticated = request.user.is_authenticated
-        if form.is_valid():
-            form.save(request)
-            return redirect("sign_in_n")
-        return render(
-            request,
-            "new_user.html",
-            context={
-                "form": form,
-                "user_authenticated": user_authenticated,
-                "active_page": "sign_up",
-            },
-        )
+class SignUpView(SignupView):
+    form_class = SignUpForm
+    def get_context_data(self, **kwargs):
+        ret = super().get_context_data(**kwargs)
+        user_authenticated = self.request.user.is_authenticated
+        ret.update({"user_authenticated": user_authenticated,
+                    "active_page": "sign_up"})
+        return ret
 
 
 class SignInView(LoginView):
-    def get(self, request):
-        form = SignInForm()
-        return render(
-            request,
-            "login_user.html",
-            context={"form": form, "active_page": "sign_in"},
-        )
-
-    def post(self, request):
-        form = SignInForm(request.POST)
+    form_class = SignInForm
+    def get_context_data(self, **kwargs):
         errors = []
-        username = request.POST["login"]
-        password = request.POST["password"]
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if not user.is_active:
-                errors.append("Your account has been deactivated")
+        if self.request.method == "POST":
+            username = self.request.POST["login"]
+            password = self.request.POST["password"]
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if not user.is_active:
+                    errors.append("Your account has been deactivated")
+                else:
+                    login(request, user)
+                    return redirect("home_n")
             else:
-                login(request, user)
-                return redirect("home_n")
-        else:
-            errors.append("Incorrect username or password")
-        return render(
-            request,
-            "login_user.html",
-            context={"form": form, "errors": errors, "active_page": "sign_in"},
-        )
+                errors.append("Incorrect username or password")
+        ret = super().get_context_data(**kwargs)
+        user_authenticated = self.request.user.is_authenticated
+        ret.update({"user_authenticated": user_authenticated,
+                    "active_page": "sign_in",
+                    "errors": errors})
+        return ret
 
 
 class ChangePasswordView(PasswordChangeView):
@@ -117,7 +90,6 @@ class SetPasswordView(PasswordSetView):
 
 class ResetPasswordView(PasswordResetView):
     form_class = ResetPasswordCustomForm
-    # success_url = reverse_lazy("")
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated

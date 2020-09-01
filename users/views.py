@@ -113,7 +113,7 @@ class ResetPasswordDoneView(PasswordResetDoneView):
 class ResetPasswordFromKeyView(PasswordResetFromKeyView):
     form_class = ResetPasswordKeyCustomForm
     success_url = reverse_lazy("reset_password_from_key_done_n")
-    
+
 
 class ResetPasswordFromKeyDoneView(PasswordResetFromKeyDoneView):
     pass
@@ -125,4 +125,3 @@ class VerificationEmailSentView(EmailVerificationSentView):
 
 class ConfirmEmailView(ConfirmEmailView):
     pass
-    

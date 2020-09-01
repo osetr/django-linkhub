@@ -7,7 +7,6 @@ urlpatterns = [
     path("change_password/", ChangePasswordView.as_view(), name="change_password_n"),
     path("set_password/", SetPasswordView.as_view(), name="set_password_n"),
     path("reset_password/", ResetPasswordView.as_view(), name="reset_password_n"),
-
     path(
         "confirm-email/",
         VerificationEmailSentView.as_view(),
@@ -18,9 +17,10 @@ urlpatterns = [
         ConfirmEmailView.as_view(),
         name="account_confirm_email",
     ),
-
     path(
-        "password_reset_done/", ResetPasswordDoneView.as_view(), name="reset_password_done_n"
+        "password_reset_done/",
+        ResetPasswordDoneView.as_view(),
+        name="reset_password_done_n",
     ),
     re_path(
         r"^password_reset_key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$",

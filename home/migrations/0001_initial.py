@@ -16,13 +16,33 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Playlist',
+            name="Playlist",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50)),
-                ('description', models.CharField(max_length=260)),
-                ('date', models.DateTimeField(default=datetime.datetime(2020, 9, 2, 10, 57, 12, 703759), editable=False)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=50)),
+                ("description", models.CharField(max_length=260)),
+                (
+                    "date",
+                    models.DateTimeField(
+                        default=datetime.datetime(2020, 9, 2, 10, 57, 12, 703759),
+                        editable=False,
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

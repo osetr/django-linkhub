@@ -7,13 +7,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0003_auto_20200902_1122'),
+        ("home", "0003_auto_20200902_1122"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='playlist',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2020, 9, 2, 11, 22, 45, 847853), editable=False),
+            model_name="playlist",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2020, 9, 2, 11, 22, 45, 847853),
+                editable=False,
+            ),
         ),
     ]

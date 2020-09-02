@@ -13,31 +13,40 @@ class HomeView(View):
         return render(
             request,
             "home.html",
-            context={"user_authenticated": user_authenticated, "active_page": "home"},
+            context={"user_authenticated": user_authenticated, 
+                     "active_page": "home"},
         )
 
     def post(self, request):
         user_authenticated = request.user.is_authenticated
         playlists_keys = request.POST.get("playlists_keys", "")
         page_content = list(Playlist.objects.values())
+
         def amount_of_occurences(str):
             general_amount = 0
             for key in playlists_keys.split():
-                general_amount += len(re.findall(key, str['title']))
-                general_amount += len(re.findall(key, str['description']))
-                general_amount += str['likes']
-            return general_amount
-        page_content.sort(key = lambda a: (amount_of_occurences(a), int(a['likes'])), reverse=True)
+                general_amount += len(re.findall(key, str["title"]))
+                general_amount += len(re.findall(key, str["description"]))
+            return general_amount - (general_amount % 10)
+
+        page_content.sort(
+            key=lambda a: (amount_of_occurences(a), int(a["likes"])), 
+            reverse=True
+        )
         if not page_content:
             page_header = "Nothing found"
             page_content = "List is empty"
         else:
             page_header = "Playlist's list"
-        # page_content = playlists_keys
         return render(
             request,
             "home.html",
-            context={"user_authenticated": user_authenticated, "active_page": "home", "page_header": page_header, "page_content": page_content},
+            context={
+                "user_authenticated": user_authenticated,
+                "active_page": "home",
+                "page_header": page_header,
+                "page_content": page_content,
+            },
         )
 
 

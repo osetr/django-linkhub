@@ -3,7 +3,6 @@
 
 {% load socialaccount %}
 {% block content %}
-<div class="container" >
   <h2>Log in</h2>
   <form action="{% url 'sign_in_n' %}" method="POST">
     {% csrf_token %}
@@ -23,5 +22,4 @@
     <button type="submit" class="btn btn-default">Login</button>
     <a href="{% provider_login_url 'google' %}"><button type="button" class="btn btn-default">With Google</button></a>
   </form>
-</div>
 {% endblock %}

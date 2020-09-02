@@ -2,10 +2,11 @@
 
 
 {% block content %}
-  {% if not name %}
+  {% if not page_content %}
   <h3>Welcome to LinkOl</h3>
   <p>Here you can find smth and fuck everything</p>
   {% else %}
-  <p>{{ name }}</p>
+  <h3>{{ page_header }}</h3>
+  <p>{{ page_content }}</p>
   {% endif %}
 {% endblock %}

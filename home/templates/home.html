@@ -3,31 +3,11 @@
 
 {% block content %}
 <div class="container">
-  <h3>Hello World {{ parametr }}</h3>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-        sed do eiusmod tempor incididunt ut labore et dolore 
-        magna aliqua. Vehicula ipsum a arcu cursus vitae congue 
-        mauris rhoncus aenean. Dictum at tempor commodo ullamcorper
-         a lacus vestibulum. Nunc mi ipsum faucibus vitae aliquet
-          nec. Adipiscing enim eu turpis egestas pretium aenean 
-          pharetra magna. Et molestie ac feugiat sed lectus. Sollicitudin
-           tempor id eu nisl nunc. Aliquam eleifend mi in nulla.
-            Duis ut diam quam nulla porttitor massa id. Sed vulputate
-             odio ut enim blandit volutpat. Gravida in fermentum et
-              sollicitudin ac orci. Consequat mauris nunc congue nisi vitae.
-    Dignissim sodales ut eu sem integer vitae. Facilisis mauris sit
-     amet massa vitae tortor condimentum. Ullamcorper a lacus vestibulum sed arcu.
-      Faucibus et molestie ac feugiat. Erat nam
-       at lectus urna duis convallis convallis tellus id. Elit ut
-        aliquam purus sit. Eget egestas purus viverra accumsan. Tortor aliquam
-         nulla facilisi cras fermentum odio eu. Adipiscing vitae proin sagittis nisl
-          rhoncus mattis. Tellus elementum sagittis vitae et
-           leo duis. Fermentum leo vel orci porta non pulvinar neque.
-            Aliquet bibendum enim facilisis gravida neque convallis a cras semper. Faucibus nisl
-             tincidunt eget nullam. Cursus eget nunc
-              scelerisque viverra mauris in aliquam. Purus ut faucibus
-               pulvinar elementum integer enim neque volutpat ac.
-                Nascetur ridiculus mus mauris vitae ultricies leo integer
-                . A scelerisque purus semper eget.</p>
+  {% if not name %}
+  <h3>Welcome to LinkOl</h3>
+  <p>Here you can find smth and fuck everything</p>
+  {% else %}
+  <p>{{ name }}</p>
+  {% endif %}
 </div>
 {% endblock %}

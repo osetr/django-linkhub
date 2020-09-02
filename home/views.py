@@ -13,6 +13,15 @@ class HomeView(View):
             context={"user_authenticated": user_authenticated, "active_page": "home"},
         )
 
+    def post(self, request):
+        user_authenticated = request.user.is_authenticated
+        name = request.POST.get("name", "")
+        return render(
+            request,
+            "home.html",
+            context={"user_authenticated": user_authenticated, "active_page": "home", "name": name},
+        )
+
 
 def LogOutView(request):
     logout(request)

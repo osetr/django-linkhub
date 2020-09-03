@@ -19,23 +19,44 @@
     <div class="checkbox">
     <label><input type="checkbox" name="remember"> Don't show introductory information</label>
   </div>
-  <a href=""><button type="button" class="btn btn-primary active" style="margin: 1px;">My playlists</button></a>
-  <a href="{% url 'add_new_playlist_n' %}"><button type="button" class="btn btn-primary active" style="margin: 1px;">Add new playlist</button></a>
-  <a href=""><button type="button" class="btn btn-primary active" style="margin: 1px;">Add new link</button></a>
-
+  <div style="margin-bottom: 40px;">
+  <form class="navbar-form navbar-left" action="/home/" style="margin: 0px; padding: 0px;" method="POST">
+    {% csrf_token %}
+    <button type="submit" name="test" class="btn btn-primary active" style="margin: 1px;">My playlists</button>
+  </form>
+    <a href="{% url 'add_new_playlist_n' %}"><button type="button" name="test" class="btn btn-primary active" style="margin: 1px;">Add new playlist</button></a>
+  </div>
   {% else %}
+  <div style="margin-bottom: 40px;">
   <button type="button" class="btn btn-primary disabled">My playlists</button>
   <button type="button" class="btn btn-primary disabled">Add new playlist</button>
-  <button type="button" class="btn btn-primary disabled">Add new link</button>
+  </div>
   {% endif %}
   {% else %}
   <h3>{{ page_header }}</h3>
+  {% if not page_content == "List is empty" %}
   {% for playlist in page_content %}
-  <div class="well well-lg">
+  {% if not request_of == "owns" or playlist.author_id == user.id %}
+  <div class="well well-lg" style="padding-bottom: 0px;">
+
+
+    {% if playlist.author_id == user.id %}
+      <div class="pull-right"><a href="">edit</a></div>
+    {% endif %}
     <h3 style="margin-top: 0px;">{{ playlist.title }}</h3>
-    <h4>Description:</h4>
+
     <p>{{ playlist.description }}</p>
+
+      <div class="panel-footer" style="border: none; padding-left: 0px; padding-right: 0px;">
+        <a href="">Show >>></a>
+          <span class="pull-right">
+              <i id="like2" class="glyphicon glyphicon-thumbs-up"></i> <div id="like2-bs3"></div>
+              <i id="dislike2" class="glyphicon glyphicon-thumbs-down"></i> <div id="dislike2-bs3"></div>
+          </span>
+      </div>
   </div>
+  {% endif %}
   {% endfor %}
+  {% endif %}
   {% endif %}
 {% endblock %}

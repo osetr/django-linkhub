@@ -9,6 +9,7 @@ class Playlist(models.Model):
     description = models.TextField(max_length=2500)
     date = models.DateTimeField(default=datetime.now(), editable=False)
     likes = models.IntegerField(default=0, editable=False)
+    dislikes = models.IntegerField(default=0, editable=False)
     is_private = models.BooleanField(default=False)
 
     def __str__(self):

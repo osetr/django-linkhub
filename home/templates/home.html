@@ -54,7 +54,7 @@
     <p>{{ playlist.description }}</p>
 
         <div class="panel-footer" style="border: none; padding-left: 0px; padding-right: 0px;">
-          <a href="">Show >>></a>
+          <a href="{% url 'show_playlist_n' playlist.id %}">Show >>></a>
           <span class="pull-right">
               {% if playlist.is_private %}
               <img src="https://img.icons8.com/metro/18/000000/lock-2.png"/>

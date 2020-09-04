@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+
+    <!-- {{ author }}<br>
+    {{ playlist }}<br>
+    {{ links }} -->
+
+    <div class="container">
+        <h2>Playlist "{{ playlist.title }}"</h2>
+        {% if author.id == user.id %}
+        <p><strong>Author</strong>: you ({{ author.username }})</p>  
+        {% else %}
+        <p><strong>Author</strong>: {{ author.username }}</p>  
+        {% endif %}
+        <p><strong>Last update</strong>: {{ playlist.date }}</p>  
+        <p><i class="glyphicon glyphicon-thumbs-up"></i> {{ playlist.likes }} <i class="glyphicon glyphicon-thumbs-down"></i> {{ playlist.dislikes }}</p>
+        <h3>Links</h3>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br>
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Link</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+                {% for link in links %}
+                    <tr>
+                        <th><a href="{{ link.link }}">{{ link.link }}</a></th>
+                        <th>{{ link.description }}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p><strong>Description</strong>:</p>
+        <p>{{ playlist.description }}</p>
+      </div>
+      
+      <script>
+      $(document).ready(function(){
+        $("#myInput").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#myTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          });
+        });
+      });
+      </script>
+
+{% endblock %} 

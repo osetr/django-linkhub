@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist
+from .models import Playlist, Link
+from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
 import re
@@ -118,9 +119,28 @@ class AddNewLinkView(View):
             link.playlist_id = pk
             link.save()
         return redirect("home_target_n", target="personal_playlists")
+
+
+class ShowPlaylistView(View):
+    def get(self, request, pk):
+        user_authenticated = request.user.is_authenticated
+        playlist = Playlist.objects.get(pk=pk)
+        links = list(Link.objects.filter(playlist_id=playlist.id).values())
+        author = User.objects.get(pk=playlist.author_id)
+
+        return render(
+            request,
+            "show_playlist.html",
+            context={"user_authenticated": user_authenticated,
+                     "playlist": playlist,
+                     "links": links,
+                     "author": author,
+                     "pk": pk}
+        )
     
 
 
 def LogOutView(request):
     logout(request)
     return redirect("home_n")
+

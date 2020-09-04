@@ -2,7 +2,9 @@
 
 
 {% block content %}
-  {% if not page_content %}
+
+
+  {% if target == "main" %}
   <h3>Welcome to LinkOl</h3>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Morbi tristique senectus et netus et malesuada fames. Velit dignissim sodales ut eu. Ut morbi tincidunt augue interdum velit. Ut tellus elementum sagittis vitae et leo duis ut. Vitae aliquet nec ullamcorper sit. Volutpat diam ut venenatis tellus in. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim cras tincidunt. Ac tortor dignissim convallis aenean et tortor. Id aliquet risus feugiat in. Convallis aenean et tortor at risus. Vitae tempus quam pellentesque nec nam aliquam sem. Odio morbi quis commodo odio aenean sed. Turpis cursus in hac habitasse platea dictumst.
     Id cursus metus aliquam eleifend mi in. In cursus turpis massa tincidunt dui ut. Magna ac placerat vestibulum lectus mauris ultrices eros in cursus. Morbi leo urna molestie at elementum. Tellus molestie nunc non blandit massa enim nec dui. Sollicitudin ac orci phasellus egestas tellus rutrum. Lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque. Et malesuada fames ac turpis egestas integer eget aliquet nibh. Convallis aenean et tortor at risus viverra adipiscing at. Ultricies mi eget mauris pharetra et. Accumsan in nisl nisi scelerisque eu ultrices vitae. Sit amet facilisis magna etiam tempor orci eu lobortis elementum. A diam sollicitudin tempor id eu nisl nunc mi. In aliquam sem fringilla ut morbi tincidunt augue interdum velit.</p>
@@ -20,43 +22,54 @@
     <label><input type="checkbox" name="remember"> Don't show introductory information</label>
   </div>
   <div style="margin-bottom: 40px;">
-  <form class="navbar-form navbar-left" action="/home/" style="margin: 0px; padding: 0px;" method="POST">
-    {% csrf_token %}
-    <button type="submit" name="test" class="btn btn-primary active" style="margin: 1px;">My playlists</button>
-  </form>
-    <a href="{% url 'add_new_playlist_n' %}"><button type="button" name="test" class="btn btn-primary active" style="margin: 1px;">Add new playlist</button></a>
+    <a href="{% url 'home_target_n' 'personal_playlists'  %}"><button type="button" class="btn btn-primary active" style="margin: 1px;">My playlists</button></a>
+    <a href="{% url 'add_new_playlist_n' %}"><button type="button" name="request_of" class="btn btn-primary active" style="margin: 1px;">Add new playlist</button></a>
   </div>
+
   {% else %}
   <div style="margin-bottom: 40px;">
   <button type="button" class="btn btn-primary disabled">My playlists</button>
   <button type="button" class="btn btn-primary disabled">Add new playlist</button>
   </div>
   {% endif %}
+
+
   {% else %}
+
+
   <h3>{{ page_header }}</h3>
-  {% if not page_content == "List is empty" %}
-  {% for playlist in page_content %}
-  {% if not request_of == "owns" or playlist.author_id == user.id %}
+  {% if not playlists == "List is empty" %}
+
+  {% for playlist in playlists %}
+  {% if not playlist.is_private or user.id == playlist.author_id %}
   <div class="well well-lg" style="padding-bottom: 0px;">
 
-
     {% if playlist.author_id == user.id %}
-      <div class="pull-right"><a href="">edit</a></div>
+      <div class="pull-right"><a href="{% url 'home_target_n' 'main' %}">edit</a></div>
+      <div class="pull-right" style="padding-right: 15px;"><a href="{% url 'add_new_link_n' playlist.id %}">add link</a></div>
     {% endif %}
+
     <h3 style="margin-top: 0px;">{{ playlist.title }}</h3>
 
     <p>{{ playlist.description }}</p>
 
-      <div class="panel-footer" style="border: none; padding-left: 0px; padding-right: 0px;">
-        <a href="">Show >>></a>
+        <div class="panel-footer" style="border: none; padding-left: 0px; padding-right: 0px;">
+          <a href="">Show >>></a>
           <span class="pull-right">
+              {% if playlist.is_private %}
+              <img src="https://img.icons8.com/metro/18/000000/lock-2.png"/>
+              {% else %}
               <i id="like2" class="glyphicon glyphicon-thumbs-up"></i> <div id="like2-bs3"></div>
               <i id="dislike2" class="glyphicon glyphicon-thumbs-down"></i> <div id="dislike2-bs3"></div>
+              {% endif %}
           </span>
-      </div>
+        </div>
   </div>
   {% endif %}
   {% endfor %}
+
   {% endif %}
+
+
   {% endif %}
 {% endblock %}

@@ -9,22 +9,41 @@ import re
 
 
 class HomeView(View):
-    def get(self, request):
+    def get(self, request, target="main"):
         user_authenticated = request.user.is_authenticated
-        return render(
-            request,
-            "home.html",
-            context={"user_authenticated": user_authenticated, 
-                     "active_page": "home"},
+        if target == "main":
+            return render(
+                request,
+                "home.html",
+                context={"user_authenticated": user_authenticated, 
+                        "active_page": "home",
+                        "target": target},
+            )
+        elif target == "personal_playlists":
+            playlists = list(Playlist.objects.filter(author=request.user.id).values())
+            if not playlists:
+                page_header = "Nothing found"
+                playlists = "List is empty"
+            else:
+                page_header = "Playlist's list"
+            return render(
+                request,
+                "home.html",
+                context={
+                    "user_authenticated": user_authenticated,
+                    "active_page": "home",
+                    "page_header": page_header,
+                    "playlists": playlists,
+                    "target": target,
+                },
         )
+        else:
+            return redirect('home_target_n', target="main")
 
-    def post(self, request):
+    def post(self, request, target="search_playlists"):
         user_authenticated = request.user.is_authenticated
         playlists_keys = request.POST.get("playlists_keys", "")
-        page_content = list(Playlist.objects.filter(is_private=0).values())
-        request_of = request.POST.get('test', 'all')
-        if not request_of:
-            request_of = "owns"
+        playlists = list(Playlist.objects.values())
 
         def amount_of_occurences(str):
             general_amount = 0
@@ -33,13 +52,13 @@ class HomeView(View):
                 general_amount += len(re.findall(key, str["description"]))
             return general_amount
 
-        page_content.sort(
+        playlists.sort(
             key=lambda a: (amount_of_occurences(a), int(a["likes"])), 
             reverse=True
         )
-        if not page_content:
+        if not playlists:
             page_header = "Nothing found"
-            page_content = "List is empty"
+            playlists = "List is empty"
         else:
             page_header = "Playlist's list"
         return render(
@@ -49,9 +68,8 @@ class HomeView(View):
                 "user_authenticated": user_authenticated,
                 "active_page": "home",
                 "page_header": page_header,
-                "page_content": page_content,
-                "user": request.user,
-                "request_of": request_of,
+                "playlists": playlists,
+                "target": target,
             },
         )
 
@@ -76,11 +94,11 @@ class AddNewPlaylistView(View):
             playlist = form.save(commit=False)
             playlist.author = request.user
             playlist.save()
-        return redirect("add_new_playlist_n")
+        return redirect("home_n")
 
 
 class AddNewLinkView(View):
-    def get(self, request):
+    def get(self, request, pk):
         form = AddNewLinkForm()
         user_authenticated = request.user.is_authenticated
 
@@ -88,18 +106,18 @@ class AddNewLinkView(View):
             request,
             "add_link.html",
             context={"user_authenticated": user_authenticated,
-                     "form": form}
+                     "form": form,
+                     "pk": pk}
         )
 
-    def post(self, request):
+    def post(self, request, pk):
         form = AddNewLinkForm(request.POST)
-        user_authenticated = request.user.is_authenticated
 
         if form.is_valid():
-            playlist = form.save(commit=False)
-            playlist.author = request.user
-            playlist.save()
-        return redirect("add_new_link_n")
+            link = form.save(commit=False)
+            link.playlist_id = pk
+            link.save()
+        return redirect("home_target_n", target="personal_playlists")
     
 
 

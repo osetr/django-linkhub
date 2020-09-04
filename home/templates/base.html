@@ -69,12 +69,12 @@
           {% endif %}
           <li class="float-right"><a href="{% url 'logout_n' %}">Logout</a></li>
           {% endif %}
-          <form class="navbar-form navbar-left" action="/home/" method="POST">
+          <form class="navbar-form navbar-left" action="{% url 'home_target_n' 'search_paylists' %}" method="POST">
             {% csrf_token %}
             <div class="form-group">
               <input type="text" required name="playlists_keys" class="form-control" placeholder="Search playlist">
             </div>
-            <button type="submit" class="btn btn-default">Seacrh</button>
+            <button type="submit" class="btn btn-default">Search</button>
           </form>  
         </ul>
       </div>

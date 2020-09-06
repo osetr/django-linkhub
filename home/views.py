@@ -120,12 +120,16 @@ def inherite_ajax(request, pk):
 class HomeView(View):
     def get(self, request, target="main"):
         user_authenticated = request.user.is_authenticated
-        inherited_playlists = list(
-            map(
-                lambda a: a["playlist_id"],
-                Inheritence.objects.filter(inherited_by=request.user).values(),
+        inherited_playlists = []
+        try:
+            inherited_playlists = list(
+                map(
+                    lambda a: a["playlist_id"],
+                    Inheritence.objects.filter(inherited_by=request.user).values(),
+                )
             )
-        )
+        except TypeError:
+            print("User isn't authorized")
         if target == "main":
             return render(
                 request,
@@ -164,12 +168,16 @@ class HomeView(View):
         user_authenticated = request.user.is_authenticated
         playlists_keys = request.POST.get("playlists_keys", "")
         playlists = list(Playlist.objects.values())
-        inherited_playlists = list(
-            map(
-                lambda a: a["playlist_id"],
-                Inheritence.objects.filter(inherited_by=request.user).values(),
+        inherited_playlists = []
+        try:
+            inherited_playlists = list(
+                map(
+                    lambda a: a["playlist_id"],
+                    Inheritence.objects.filter(inherited_by=request.user).values(),
+                )
             )
-        )
+        except TypeError:
+            print("User isn't authorized")
 
         def amount_of_occurences(str):
             general_amount = 0

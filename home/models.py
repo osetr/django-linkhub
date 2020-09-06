@@ -24,3 +24,10 @@ class Link(models.Model):
 
     def __str__(self):
         return "%s in %s" % (self.link, self.playlist)
+
+
+class Evaluating(models.Model):
+    like = models.IntegerField(default=0, editable=False)
+    dislike = models.IntegerField(default=0, editable=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default="", editable=False)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, default="", editable=False)

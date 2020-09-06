@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link
+from .models import Playlist, Link, Evaluating
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
@@ -12,10 +12,28 @@ from django.http import Http404, JsonResponse
 
 def like_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
-    playlist.likes += 1
-    playlist.save()
+    try:
+        evaluating = Evaluating.objects.filter(author=request.user, 
+                                               playlist=playlist).get()
+    except Evaluating.DoesNotExist:
+        evaluating = Evaluating(like=1, 
+                                dislike=0, 
+                                author=request.user, 
+                                playlist=playlist)
+        playlist.likes += 1
+        playlist.save()
+        evaluating.save()
+    else:
+        if evaluating.like == 0:
+            playlist.likes += 1
+            playlist.dislikes -= 1
+            evaluating.like = 1
+            evaluating.dislike = 0
+            evaluating.save()
+            playlist.save()
+
     likes_amount = playlist.likes
-    dislikes_amount = playlist.dislikes
+    dislikes_amount = playlist.dislikes       
     if request.is_ajax():
         response = {'likes_amount': likes_amount, 
                     'dislikes_amount': dislikes_amount}
@@ -27,10 +45,27 @@ def like_ajax(request, pk):
 
 def dislike_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
-    playlist.dislikes += 1
-    playlist.save()
+    evaluating = Evaluating.objects.filter(author=request.user, 
+                                           playlist=playlist).get()
+    if not evaluating:
+        evaluating = Evaluating(like=0, 
+                                dislike=1, 
+                                author=request.user, 
+                                playlist=playlist)
+        playlist.dislikes += 1
+        playlist.save()
+        evaluating.save()
+    else:
+        if evaluating.dislike == 0:
+            playlist.dislikes += 1
+            playlist.likes -= 1
+            evaluating.dislike = 1
+            evaluating.like = 0
+            evaluating.save()
+            playlist.save()
+
     likes_amount = playlist.likes
-    dislikes_amount = playlist.dislikes
+    dislikes_amount = playlist.dislikes 
     if request.is_ajax():
         response = {'likes_amount': likes_amount, 'dislikes_amount': dislikes_amount}
 

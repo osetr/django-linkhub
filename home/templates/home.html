@@ -76,6 +76,8 @@
     {% if playlist.author_id == user.id %}
       <div class="pull-right"><a href="{% url 'home_target_n' 'main' %}">edit</a></div>
       <div class="pull-right" style="padding-right: 15px;"><a href="{% url 'add_new_link_n' playlist.id %}">add link</a></div>
+    {% else %}
+      <div class="pull-right"><img src="https://img.icons8.com/fluent/23/000000/star.png"/></div>
     {% endif %}
 
     <h3 style="margin-top: 0px;">{{ playlist.title }}</h3>

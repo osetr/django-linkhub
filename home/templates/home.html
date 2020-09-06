@@ -39,8 +39,37 @@
 
   <h3>{{ page_header }}</h3>
   {% if not playlists == "List is empty" %}
-
   {% for playlist in playlists %}
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $("#like" + "{{ playlist.id }}").click(function() {
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: "{% url 'like_ajax_n' playlist.id %}",
+                success: function(data) {
+                    document.getElementById('like' + '{{ playlist.id }}' + '_amount').innerHTML=data['likes_amount'];
+                    document.getElementById('dislike' + '{{ playlist.id }}' + '_amount').innerHTML=data['dislikes_amount'];
+                },
+                dataType: 'json',
+            });
+        });
+        $("#dislike" + "{{ playlist.id }}").click(function() {
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: "{% url 'dislike_ajax_n' playlist.id %}",
+                success: function(data) {
+                    document.getElementById('like' + '{{ playlist.id }}' + '_amount').innerHTML=data['likes_amount'];
+                    document.getElementById('dislike' + '{{ playlist.id }}' + '_amount').innerHTML=data['dislikes_amount'];
+                },
+                dataType: 'json',
+            });
+        });
+    });
+  </script>
+
   {% if not playlist.is_private or user.id == playlist.author_id %}
   <div class="well well-lg" style="padding-bottom: 0px;">
 
@@ -59,8 +88,8 @@
               {% if playlist.is_private %}
               <img src="https://img.icons8.com/metro/18/000000/lock-2.png"/>
               {% else %}
-              <i id="like2" class="glyphicon glyphicon-thumbs-up"></i> <div id="like2-bs3"></div>
-              <i id="dislike2" class="glyphicon glyphicon-thumbs-down"></i> <div id="dislike2-bs3"></div>
+              <i id="like{{ playlist.id }}" class="glyphicon glyphicon-thumbs-up"></i> <div id="like{{ playlist.id }}_amount">{{ playlist.likes }}</div>
+              <i id="dislike{{ playlist.id }}"  class="glyphicon glyphicon-thumbs-down"></i> <div id="dislike{{ playlist.id }}_amount">{{ playlist.dislikes }}</div>
               {% endif %}
           </span>
         </div>

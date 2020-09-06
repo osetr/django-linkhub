@@ -10,12 +10,23 @@
 
     <div class="container">
         <h2>Playlist "{{ playlist.title }}"</h2>
+        {% if playlist.author_id == user.id %}
+        <p>
+            <a href="{% url 'add_new_link_n' playlist.id %}">add link</a>
+            <a href="{% url 'home_target_n' 'main' %}" style="margin-left: 15px;">edit</a>
+        </p>
+        {% endif %}
         {% if author.id == user.id %}
         <p><strong>Author</strong>: you ({{ author.username }})</p>  
         {% else %}
         <p><strong>Author</strong>: {{ author.username }}</p>  
         {% endif %}
         <p><strong>Last update</strong>: {{ playlist.date }}</p>  
+        {% if playlist.is_private %}
+        <p><strong>Status</strong>: private</p>  
+        {% else %}
+        <p><strong>Status</strong>: public</p>  
+        {% endif %}
         <p><i class="glyphicon glyphicon-thumbs-up"></i> {{ playlist.likes }} <i class="glyphicon glyphicon-thumbs-down"></i> {{ playlist.dislikes }}</p>
         <h3>Links</h3>
         <input class="form-control" id="myInput" type="text" placeholder="Search..">
@@ -36,7 +47,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <p><strong>Description</strong>:</p>
+        <strong>Description</strong>:</p>
         <p>{{ playlist.description }}</p>
       </div>
       

@@ -7,6 +7,36 @@ from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
 import re
+from django.http import Http404, JsonResponse
+
+
+def like_ajax(request, pk):
+    playlist = Playlist.objects.get(pk=pk)
+    playlist.likes += 1
+    playlist.save()
+    likes_amount = playlist.likes
+    dislikes_amount = playlist.dislikes
+    if request.is_ajax():
+        response = {'likes_amount': likes_amount, 
+                    'dislikes_amount': dislikes_amount}
+
+        return JsonResponse(response)
+    else:
+        raise Http404
+
+
+def dislike_ajax(request, pk):
+    playlist = Playlist.objects.get(pk=pk)
+    playlist.dislikes += 1
+    playlist.save()
+    likes_amount = playlist.likes
+    dislikes_amount = playlist.dislikes
+    if request.is_ajax():
+        response = {'likes_amount': likes_amount, 'dislikes_amount': dislikes_amount}
+
+        return JsonResponse(response)
+    else:
+        raise Http404
 
 
 class HomeView(View):
@@ -32,7 +62,6 @@ class HomeView(View):
                 "home.html",
                 context={
                     "user_authenticated": user_authenticated,
-                    "active_page": "home",
                     "page_header": page_header,
                     "playlists": playlists,
                     "target": target,
@@ -67,7 +96,6 @@ class HomeView(View):
             "home.html",
             context={
                 "user_authenticated": user_authenticated,
-                "active_page": "home",
                 "page_header": page_header,
                 "playlists": playlists,
                 "target": target,

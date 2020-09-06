@@ -27,7 +27,9 @@ class Link(models.Model):
 
 
 class Evaluating(models.Model):
-    like = models.IntegerField(default=0, editable=False)
-    dislike = models.IntegerField(default=0, editable=False)
+    state = models.IntegerField(max_length=1, default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default="", editable=False)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, default="", editable=False)
+
+    def __str__(self):
+        return "%s of %s" % (self.author, self.playlist)

@@ -16,19 +16,30 @@ def like_ajax(request, pk):
         evaluating = Evaluating.objects.filter(author=request.user, 
                                                playlist=playlist).get()
     except Evaluating.DoesNotExist:
-        evaluating = Evaluating(like=1, 
-                                dislike=0, 
+        evaluating = Evaluating(state=1, 
                                 author=request.user, 
                                 playlist=playlist)
         playlist.likes += 1
         playlist.save()
         evaluating.save()
     else:
-        if evaluating.like == 0:
+        # if playlist already liked
+        if evaluating.state == 1:
+            playlist.likes -= 1
+            evaluating.state = 0
+            evaluating.save()
+            playlist.save()
+        # if playlist still doesn't have evaluating
+        elif evaluating.state == 0:
+            playlist.likes += 1
+            evaluating.state = 1
+            evaluating.save()
+            playlist.save()
+        # if playlist was disliked
+        elif evaluating.state == -1:
             playlist.likes += 1
             playlist.dislikes -= 1
-            evaluating.like = 1
-            evaluating.dislike = 0
+            evaluating.state = 1
             evaluating.save()
             playlist.save()
 
@@ -48,19 +59,30 @@ def dislike_ajax(request, pk):
     evaluating = Evaluating.objects.filter(author=request.user, 
                                            playlist=playlist).get()
     if not evaluating:
-        evaluating = Evaluating(like=0, 
-                                dislike=1, 
+        evaluating = Evaluating(state=-1,
                                 author=request.user, 
                                 playlist=playlist)
         playlist.dislikes += 1
         playlist.save()
         evaluating.save()
     else:
-        if evaluating.dislike == 0:
-            playlist.dislikes += 1
+        # if playlist was liked
+        if evaluating.state == 1:
             playlist.likes -= 1
-            evaluating.dislike = 1
-            evaluating.like = 0
+            playlist.dislikes += 1
+            evaluating.state = -1
+            evaluating.save()
+            playlist.save()
+        # if playlist still doesn't have evaluating
+        elif evaluating.state == 0:
+            playlist.dislikes += 1
+            evaluating.state = -1
+            evaluating.save()
+            playlist.save()
+        # if playlist already disliked
+        elif evaluating.state == -1:
+            playlist.dislikes -= 1
+            evaluating.state = 0
             evaluating.save()
             playlist.save()
 

@@ -56,9 +56,10 @@ def like_ajax(request, pk):
 
 def dislike_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
-    evaluating = Evaluating.objects.filter(author=request.user, 
-                                           playlist=playlist).get()
-    if not evaluating:
+    try:
+        evaluating = Evaluating.objects.filter(author=request.user, 
+                                               playlist=playlist).get()
+    except Evaluating.DoesNotExist:
         evaluating = Evaluating(state=-1,
                                 author=request.user, 
                                 playlist=playlist)

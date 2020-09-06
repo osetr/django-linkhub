@@ -10,18 +10,25 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('home', '0009_auto_20200903_1059'),
+        ("home", "0009_auto_20200903_1059"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='playlist',
-            name='author',
-            field=models.ForeignKey(default='', editable=False, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="playlist",
+            name="author",
+            field=models.ForeignKey(
+                default="",
+                editable=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='playlist',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2020, 9, 3, 11, 3, 35, 275097), editable=False),
+            model_name="playlist",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2020, 9, 3, 11, 3, 35, 275097), editable=False
+            ),
         ),
     ]

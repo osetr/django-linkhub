@@ -4,7 +4,9 @@ from accounts.models import User
 
 
 class Playlist(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default="", editable=False)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, default="", editable=False
+    )
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=2500)
     date = models.DateTimeField(default=datetime.now(), editable=False)
@@ -18,7 +20,9 @@ class Playlist(models.Model):
 
 class Link(models.Model):
     link = models.URLField(max_length=128)
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, default="", editable=False)
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, default="", editable=False
+    )
     description = models.CharField(max_length=124)
     check_relevance = models.BooleanField(default=False)
 
@@ -28,8 +32,24 @@ class Link(models.Model):
 
 class Evaluating(models.Model):
     state = models.IntegerField(max_length=1, default=0)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default="", editable=False)
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, default="", editable=False)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, default="", editable=False
+    )
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, default="", editable=False
+    )
 
     def __str__(self):
         return "%s of %s" % (self.author, self.playlist)
+
+
+class Inheritence(models.Model):
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, default="", editable=False
+    )
+    inherited_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, default="", editable=False
+    )
+
+    def __str__(self):
+        return "%s inherited by %s" % (self.playlist.id, self.inherited_by.username)

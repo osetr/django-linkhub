@@ -8,6 +8,7 @@ urlpatterns = [
     path("home/playlist/show/<pk>", ShowPlaylistView.as_view(), name="show_playlist_n"),
     path("home/add_link/<pk>/", AddNewLinkView.as_view(), name="add_new_link_n"),
     path("logout/", LogOutView, name="logout_n"),
-    path(r'^ajax/like_playlist/<pk>$', like_ajax, name="like_ajax_n"),
-    path(r'^ajax/dislike_playlist/<pk>$', dislike_ajax, name="dislike_ajax_n"),
+    path(r"^ajax/like_playlist/<pk>$", like_ajax, name="like_ajax_n"),
+    path(r"^ajax/dislike_playlist/<pk>$", dislike_ajax, name="dislike_ajax_n"),
+    path(r"^ajax/inherite_playlist/<pk>$", inherite_ajax, name="inherite_ajax_n"),
 ]

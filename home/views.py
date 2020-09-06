@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link, Evaluating
+from .models import Playlist, Link, Evaluating, Inheritence
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
@@ -13,12 +13,11 @@ from django.http import Http404, JsonResponse
 def like_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
     try:
-        evaluating = Evaluating.objects.filter(author=request.user, 
-                                               playlist=playlist).get()
+        evaluating = Evaluating.objects.filter(
+            author=request.user, playlist=playlist
+        ).get()
     except Evaluating.DoesNotExist:
-        evaluating = Evaluating(state=1, 
-                                author=request.user, 
-                                playlist=playlist)
+        evaluating = Evaluating(state=1, author=request.user, playlist=playlist)
         playlist.likes += 1
         playlist.save()
         evaluating.save()
@@ -44,10 +43,9 @@ def like_ajax(request, pk):
             playlist.save()
 
     likes_amount = playlist.likes
-    dislikes_amount = playlist.dislikes       
+    dislikes_amount = playlist.dislikes
     if request.is_ajax():
-        response = {'likes_amount': likes_amount, 
-                    'dislikes_amount': dislikes_amount}
+        response = {"likes_amount": likes_amount, "dislikes_amount": dislikes_amount}
 
         return JsonResponse(response)
     else:
@@ -57,12 +55,11 @@ def like_ajax(request, pk):
 def dislike_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
     try:
-        evaluating = Evaluating.objects.filter(author=request.user, 
-                                               playlist=playlist).get()
+        evaluating = Evaluating.objects.filter(
+            author=request.user, playlist=playlist
+        ).get()
     except Evaluating.DoesNotExist:
-        evaluating = Evaluating(state=-1,
-                                author=request.user, 
-                                playlist=playlist)
+        evaluating = Evaluating(state=-1, author=request.user, playlist=playlist)
         playlist.dislikes += 1
         playlist.save()
         evaluating.save()
@@ -88,9 +85,32 @@ def dislike_ajax(request, pk):
             playlist.save()
 
     likes_amount = playlist.likes
-    dislikes_amount = playlist.dislikes 
+    dislikes_amount = playlist.dislikes
     if request.is_ajax():
-        response = {'likes_amount': likes_amount, 'dislikes_amount': dislikes_amount}
+        response = {"likes_amount": likes_amount, "dislikes_amount": dislikes_amount}
+
+        return JsonResponse(response)
+    else:
+        raise Http404
+
+
+def inherite_ajax(request, pk):
+    playlist = Playlist.objects.get(pk=pk)
+    current_user = request.user
+    try:
+        inheritence = Inheritence.objects.filter(
+            inherited_by=current_user, playlist=playlist
+        ).get()
+    except Inheritence.DoesNotExist:
+        if not playlist.is_private:
+            inheritence = Inheritence(playlist=playlist, inherited_by=current_user)
+            inheritence.save()
+            response = "inhereted successfuly"
+    else:
+        inheritence.delete()
+        response = "inheretence deleted"
+    if request.is_ajax():
+        response = {"response": response}
 
         return JsonResponse(response)
     else:
@@ -100,16 +120,27 @@ def dislike_ajax(request, pk):
 class HomeView(View):
     def get(self, request, target="main"):
         user_authenticated = request.user.is_authenticated
+        inherited_playlists = list(
+            map(
+                lambda a: a["playlist_id"],
+                Inheritence.objects.filter(inherited_by=request.user).values(),
+            )
+        )
         if target == "main":
             return render(
                 request,
                 "home.html",
-                context={"user_authenticated": user_authenticated, 
-                        "active_page": "home",
-                        "target": target},
+                context={
+                    "user_authenticated": user_authenticated,
+                    "active_page": "home",
+                    "target": target,
+                    "inherited_playlists": inherited_playlists,
+                },
             )
         elif target == "personal_playlists":
             playlists = list(Playlist.objects.filter(author=request.user.id).values())
+            for inh_playlist_pk in inherited_playlists:
+                playlists.append(Playlist.objects.get(pk=inh_playlist_pk))
             if not playlists:
                 page_header = "Nothing found"
                 playlists = "List is empty"
@@ -123,15 +154,22 @@ class HomeView(View):
                     "page_header": page_header,
                     "playlists": playlists,
                     "target": target,
+                    "inherited_playlists": inherited_playlists,
                 },
-        )
+            )
         else:
-            return redirect('home_target_n', target="main")
+            return redirect("home_target_n", target="main")
 
     def post(self, request, target="search_playlists"):
         user_authenticated = request.user.is_authenticated
         playlists_keys = request.POST.get("playlists_keys", "")
         playlists = list(Playlist.objects.values())
+        inherited_playlists = list(
+            map(
+                lambda a: a["playlist_id"],
+                Inheritence.objects.filter(inherited_by=request.user).values(),
+            )
+        )
 
         def amount_of_occurences(str):
             general_amount = 0
@@ -141,8 +179,7 @@ class HomeView(View):
             return general_amount
 
         playlists.sort(
-            key=lambda a: (amount_of_occurences(a), int(a["likes"])), 
-            reverse=True
+            key=lambda a: (amount_of_occurences(a), int(a["likes"])), reverse=True
         )
         if not playlists:
             page_header = "Nothing found"
@@ -157,6 +194,7 @@ class HomeView(View):
                 "page_header": page_header,
                 "playlists": playlists,
                 "target": target,
+                "inherited_playlists": inherited_playlists,
             },
         )
 
@@ -169,8 +207,7 @@ class AddNewPlaylistView(View):
         return render(
             request,
             "add_playlist.html",
-            context={"user_authenticated": user_authenticated,
-                     "form": form}
+            context={"user_authenticated": user_authenticated, "form": form},
         )
 
     def post(self, request):
@@ -192,9 +229,7 @@ class AddNewLinkView(View):
         return render(
             request,
             "add_link.html",
-            context={"user_authenticated": user_authenticated,
-                     "form": form,
-                     "pk": pk}
+            context={"user_authenticated": user_authenticated, "form": form, "pk": pk},
         )
 
     def post(self, request, pk):
@@ -217,16 +252,16 @@ class ShowPlaylistView(View):
         return render(
             request,
             "show_playlist.html",
-            context={"user_authenticated": user_authenticated,
-                     "playlist": playlist,
-                     "links": links,
-                     "author": author,
-                     "pk": pk}
+            context={
+                "user_authenticated": user_authenticated,
+                "playlist": playlist,
+                "links": links,
+                "author": author,
+                "pk": pk,
+            },
         )
-    
 
 
 def LogOutView(request):
     logout(request)
     return redirect("home_n")
-

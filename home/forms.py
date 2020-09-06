@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from .models import Playlist, Link
 
+
 class AddNewPlaylistForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -8,12 +9,17 @@ class AddNewPlaylistForm(ModelForm):
             {"class": "form-control", "placeholder": "Enter title"}
         )
         self.fields["description"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Enter description", "style": "resize: none;"}
+            {
+                "class": "form-control",
+                "placeholder": "Enter description",
+                "style": "resize: none;",
+            }
         )
         self.fields["is_private"].label = "Make private"
+
     class Meta:
         model = Playlist
-        fields = '__all__'
+        fields = "__all__"
 
 
 class AddNewLinkForm(ModelForm):
@@ -26,6 +32,7 @@ class AddNewLinkForm(ModelForm):
             {"class": "form-control", "placeholder": "Enter short description"}
         )
         self.fields["check_relevance"].label = "Send message if link is out of date"
+
     class Meta:
         model = Link
-        fields = '__all__'
+        fields = "__all__"

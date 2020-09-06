@@ -7,18 +7,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0011_auto_20200903_1526'),
+        ("home", "0011_auto_20200903_1526"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='playlist',
-            name='dislikes',
+            model_name="playlist",
+            name="dislikes",
             field=models.IntegerField(default=0, editable=False),
         ),
         migrations.AlterField(
-            model_name='playlist',
-            name='date',
-            field=models.DateTimeField(default=datetime.datetime(2020, 9, 4, 14, 22, 13, 147435), editable=False),
+            model_name="playlist",
+            name="date",
+            field=models.DateTimeField(
+                default=datetime.datetime(2020, 9, 4, 14, 22, 13, 147435),
+                editable=False,
+            ),
         ),
     ]

@@ -53,3 +53,13 @@ class Inheritence(models.Model):
 
     def __str__(self):
         return "%s inherited by %s" % (self.playlist.id, self.inherited_by.username)
+
+
+class IntroInfo(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, default="", editable=False
+    )
+    show = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "Show intro(%s) to %s" % (self.show, self.author.username)

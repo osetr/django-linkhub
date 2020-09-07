@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link, Evaluating, Inheritence
+from .models import Playlist, Link, Evaluating, Inheritence, IntroInfo
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
@@ -117,19 +117,41 @@ def inherite_ajax(request, pk):
         raise Http404
 
 
+def show_introduction_ajax(request):
+    introinfo = IntroInfo.objects.filter(author=request.user).get()
+    
+    if introinfo.show == 0:
+        introinfo.show = 1
+    else:
+        introinfo.show = 0
+    introinfo.save()
+        
+    if request.is_ajax():
+        response = {"response": "success"}
+
+        return JsonResponse(response)
+    else:
+        raise Http404
+
+
 class HomeView(View):
     def get(self, request, target="main"):
         user_authenticated = request.user.is_authenticated
         inherited_playlists = []
-        try:
+        show = 1
+        if user_authenticated:
+            try:
+                introinfo = IntroInfo.objects.filter(author=request.user).get()
+                show = introinfo.show
+            except IntroInfo.DoesNotExist:
+                introinfo = IntroInfo(author=request.user)
+                introinfo.save()
             inherited_playlists = list(
                 map(
                     lambda a: a["playlist_id"],
                     Inheritence.objects.filter(inherited_by=request.user).values(),
                 )
             )
-        except TypeError:
-            print("User isn't authorized")
         if target == "main":
             return render(
                 request,
@@ -139,6 +161,7 @@ class HomeView(View):
                     "active_page": "home",
                     "target": target,
                     "inherited_playlists": inherited_playlists,
+                    "show": show,
                 },
             )
         elif target == "personal_playlists":
@@ -159,6 +182,7 @@ class HomeView(View):
                     "playlists": playlists,
                     "target": target,
                     "inherited_playlists": inherited_playlists,
+                    "show": show,
                 },
             )
         else:
@@ -169,15 +193,13 @@ class HomeView(View):
         playlists_keys = request.POST.get("playlists_keys", "")
         playlists = list(Playlist.objects.values())
         inherited_playlists = []
-        try:
+        if user_authenticated:
             inherited_playlists = list(
                 map(
                     lambda a: a["playlist_id"],
                     Inheritence.objects.filter(inherited_by=request.user).values(),
                 )
             )
-        except TypeError:
-            print("User isn't authorized")
 
         def amount_of_occurences(str):
             general_amount = 0

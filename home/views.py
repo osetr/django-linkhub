@@ -119,7 +119,7 @@ def inherite_ajax(request, pk):
 
 def show_introduction_ajax(request):
     introinfo = IntroInfo.objects.filter(author=request.user).get()
-    
+
     if introinfo.show == 0:
         introinfo.show = 1
     else:
@@ -186,7 +186,7 @@ class HomeView(View):
                 },
             )
         else:
-            return redirect("home_target_n", target="main")
+            raise Http404
 
     def post(self, request, target="search_playlists"):
         user_authenticated = request.user.is_authenticated

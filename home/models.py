@@ -23,7 +23,7 @@ class Link(models.Model):
     playlist = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default="", editable=False
     )
-    description = models.CharField(max_length=124)
+    description = models.CharField(max_length=124, blank=True)
     check_relevance = models.BooleanField(default=False)
 
     def __str__(self):

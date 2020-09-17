@@ -251,6 +251,34 @@ class AddNewPlaylistView(View):
         return redirect("home_n")
 
 
+class EditPlaylistView(View):
+    def get(self, request, pk):
+        playlist = Playlist.objects.get(pk=pk)
+        title = playlist.title
+        description = playlist.description
+        is_private = playlist.is_private
+        form = AddNewPlaylistForm({'title': title, 'description': description, 'is_private': is_private})
+        user_authenticated = request.user.is_authenticated
+
+        return render(
+            request,
+            "edit_playlist.html",
+            context={"user_authenticated": user_authenticated, "form": form, "pk": pk},
+        )
+
+    def post(self, request, pk):
+        form = AddNewPlaylistForm(request.POST)
+        user_authenticated = request.user.is_authenticated
+
+        if form.is_valid():
+            playlist = Playlist.objects.get(pk=pk)
+            playlist.title = form.cleaned_data['title']
+            playlist.description = form.cleaned_data['description']
+            playlist.is_private = form.cleaned_data['is_private']
+            playlist.save()
+        return redirect("home_n")
+
+
 class AddNewLinkView(View):
     def get(self, request, pk):
         form = AddNewLinkForm()

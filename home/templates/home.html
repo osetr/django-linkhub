@@ -3,7 +3,6 @@
 
 {% block content %}
 
-
   {% if target == "main" %}
   <h3>Welcome to LinkHub</h3>
   {% if show %}
@@ -56,8 +55,6 @@
   <button type="button" class="btn btn-primary disabled">Add new playlist</button>
   </div>
   {% endif %}
-
-
   {% else %}
 
 
@@ -114,7 +111,7 @@
   <div class="well well-lg" style="padding-bottom: 0px;">
 
     {% if playlist.author_id == user.id %}
-      <div class="pull-right"><a href="{% url 'home_target_n' 'main' %}">edit</a></div>
+      <div class="pull-right"><a href="{% url 'edit_playlist_n' playlist.id %}">edit</a></div>
       <div class="pull-right" style="padding-right: 15px;"><a href="{% url 'add_new_link_n' playlist.id %}">add link</a></div>
     {% elif user_authenticated %}
       <div class="pull-right" id="inherite_playlist{{ playlist.id }}">

@@ -8,7 +8,7 @@ class Playlist(models.Model):
         User, on_delete=models.CASCADE, default="", editable=False
     )
     title = models.CharField(max_length=50)
-    description = models.TextField(max_length=2500)
+    description = models.CharField(max_length=1024, blank=True)
     date = models.DateTimeField(default=datetime.now(), editable=False)
     likes = models.IntegerField(default=0, editable=False)
     dislikes = models.IntegerField(default=0, editable=False)

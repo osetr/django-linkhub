@@ -9,11 +9,7 @@ class AddNewPlaylistForm(ModelForm):
             {"class": "form-control", "placeholder": "Enter title"}
         )
         self.fields["description"].widget.attrs.update(
-            {
-                "class": "form-control",
-                "placeholder": "Enter description",
-                "style": "resize: none;",
-            }
+            {"class": "form-control", "placeholder": "Enter description"}
         )
         self.fields["is_private"].label = "Make private"
 

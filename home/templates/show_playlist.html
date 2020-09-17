@@ -13,7 +13,7 @@
         {% if playlist.author_id == user.id %}
         <p>
             <a href="{% url 'add_new_link_n' playlist.id %}">add link</a>
-            <a href="{% url 'home_target_n' 'main' %}" style="margin-left: 15px;">edit</a>
+            <a href="{% url 'edit_playlist_n' playlist.id %}" style="margin-left: 15px;">edit</a>
         </p>
         {% endif %}
         {% if author.id == user.id %}

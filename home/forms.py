@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, CharField, HiddenInput
 from .models import Playlist, Link
 
 
@@ -16,6 +16,15 @@ class AddNewPlaylistForm(ModelForm):
     class Meta:
         model = Playlist
         fields = "__all__"
+
+
+class EditPlaylistForm(AddNewPlaylistForm):
+    links = CharField(widget=HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["is_private"].label = "Is private"
+        self.fields["links"].label = ""
 
 
 class AddNewLinkForm(ModelForm):

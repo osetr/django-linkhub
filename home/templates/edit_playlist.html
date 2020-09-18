@@ -3,10 +3,12 @@
 
 
 {% block content %}
-    <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
-    <div id="links_to_add">
-    <h5 class="h5" id="head_banner">{% trans "" %}</h5>
+  <div id="links_to_add">
     <form action="{% url 'edit_playlist_n' pk %}" method="POST">
+    <button v-on:click.prevent class="btn btn-outline-danger pull-right">Delete</button>
+    <button class="btn btn-primary pull-right" style="margin-right: 10px;">Save changes</button>
+    <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
+    <h5 class="h5" id="head_banner">{% trans "" %}</h5>
         {% csrf_token %}
         {% for field in form %}
           <div class="form-group">
@@ -15,24 +17,23 @@
           </div>
         {% endfor %}
         <input v-model="all_links" type="hidden" name="links">
-        <button type="submit" class="btn btn-default">Save</button>
     </form>
 
 
-        <form v-on:submit.prevent="addNewLink">
-          <label for="new_link">Add new link</label>
-          <input
-            v-model="newLink"
-            id="new_link"
-            placeholder="New link">
-          <button>Добавить</button>
-        </form>
-        <ul>
-          <li
-            v-for="todo in todos"
-          >[[ todo.link ]] <input v-model="todo.description" placeholder="Add description"><input v-model="todo.check" type="checkbox"><button @click="deleteLink(todo.id)">Delete</button></li>
-        </ul>
-    </div>
+    <form v-on:submit.prevent="addNewLink">
+      <label for="new_link">Add new link</label>
+      <input
+        v-model="newLink"
+        id="new_link"
+        placeholder="New link">
+      <button>Добавить</button>
+    </form>
+    <ul>
+      <li
+        v-for="todo in todos"
+      >[[ todo.link ]] <input v-model="todo.description" placeholder="Add description"><input v-model="todo.check" type="checkbox"><button @click="deleteLink(todo.id)">Delete</button></li>
+    </ul>
+  </div>
 
 
     <script>

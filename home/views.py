@@ -125,7 +125,7 @@ def show_introduction_ajax(request):
     else:
         introinfo.show = 0
     introinfo.save()
-
+        
     if request.is_ajax():
         response = {"response": "success"}
 
@@ -253,80 +253,42 @@ class AddNewPlaylistView(View):
 
 class EditPlaylistView(View):
     def get(self, request, pk):
-        playlist = Playlist.objects.get(pk=pk)
-        title = playlist.title
-        description = playlist.description
-        is_private = playlist.is_private
-        form = AddNewPlaylistForm(
-            {"title": title, "description": description, "is_private": is_private}
-        )
-        user_authenticated = request.user.is_authenticated
-        links = Link.objects.filter(playlist_id=pk).all()
+        try:
+            playlist = Playlist.objects.get(pk=pk)
+            title = playlist.title
+            description = playlist.description
+            is_private = playlist.is_private
+            form = AddNewPlaylistForm(
+                {"title": title, "description": description, "is_private": is_private}
+            )
+            user_authenticated = request.user.is_authenticated
+            links = Link.objects.filter(playlist_id=pk).all()
 
-        return render(
-            request,
-            "edit_playlist.html",
-            context={
-                "user_authenticated": user_authenticated,
-                "form": form,
-                "pk": pk,
-                "links": links,
-            },
-        )
+            return render(
+                request,
+                "edit_playlist.html",
+                context={
+                    "user_authenticated": user_authenticated,
+                    "form": form,
+                    "pk": pk,
+                    "links": links,
+                },
+            )
+        except:
+            return redirect("home_target_n", target="personal_playlists")
+
 
     def post(self, request, pk):
-        def data_to_json(data):
-            links = re.findall("link:.*?,", page_links)
-            descriptions = re.findall("description:.*?,", page_links)
-            checks = re.findall("check:.*?,", page_links)
-            links = list(map(lambda a: re.search("link:(.*?),", a).group(1), links))
-            descriptions = list(
-                map(lambda a: re.search("description:(.*?),", a).group(1), descriptions)
-            )
-            checks = list(map(lambda a: re.search("check:(.*?),", a).group(1), checks))
-            result = [
-                {
-                    "link": links[i],
-                    "description": descriptions[i],
-                    "check_relevance": checks[i],
-                }
-                for i in range(len(links))
-            ]
-
-            return result
-
         form = AddNewPlaylistForm(request.POST)
         user_authenticated = request.user.is_authenticated
 
-        page_links = request.POST["links"]
-        page_links = data_to_json(page_links)
-
         if form.is_valid():
             playlist = Playlist.objects.get(pk=pk)
-            playlist.title = form.cleaned_data["title"]
-            playlist.description = form.cleaned_data["description"]
-            playlist.is_private = form.cleaned_data["is_private"]
-            db_links = Link.objects.filter(playlist_id=pk).all()
-            for db_link in db_links:
-                if not db_link.link in [page_link["link"] for page_link in page_links]:
-                    db_link.delete()
-
-            for page_link in page_links:
-                try:
-                    db_link = db_links.get(link=page_link["link"])
-                    db_link.description = page_link["description"]
-                    db_link.check_relevance = page_link["check_relevance"] == "true"
-                    db_link.save()
-                except:
-                    Link.objects.create(
-                        link=page_link["link"],
-                        description=page_link["description"],
-                        check_relevance=page_link["check_relevance"] == "true",
-                        playlist_id=pk,
-                    )
-
+            playlist.title = form.cleaned_data['title']
+            playlist.description = form.cleaned_data['description']
+            playlist.is_private = form.cleaned_data['is_private']
             playlist.save()
-        return redirect("home_target_n", target="personal_playlists")
+        return redirect("home_n")
 
 
 class AddNewLinkView(View):

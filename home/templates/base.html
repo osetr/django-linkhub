@@ -6,68 +6,68 @@
   {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
 
-  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <nav class="navbar navbar-dark navbar-expand-lg bg-dark ">
     <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>                        
-        </button>
-        <a class="navbar-brand" href="{% url 'home_n' %}">LinkHub</a>
-      </div>
-      <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="nav navbar-nav">
+      <a class="navbar-brand" href="{% url 'home_n' %}">LinkHub</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
           {% if active_page == "home" %}
-          <li class="active"><a href="{% url 'home_n' %}">Home</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'home_n' %}">Home</a></li>
           {% else %}
-          <li><a href="{% url 'home_n' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'home_n' %}">Home</a></li>
           {% endif %}
           {% if not user_authenticated %}
           {% if active_page == "sign_in" %}
-          <li class="active"><a href="{% url 'sign_in_n' %}">Sing in</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'sign_in_n' %}">Sing in</a></li>
           {% else %}
-          <li><a href="{% url 'sign_in_n' %}">Sing in</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'sign_in_n' %}">Sing in</a></li>
           {% endif %}
           {% if active_page == "sign_up" %}
-          <li class="active"><a href="{% url 'sign_up_n' %}">Sign up</a></li>
+          <li class="nax-item active"><a class="nav-link" href="{% url 'sign_up_n' %}">Sign up</a></li>
           {% else %}
-          <li><a href="{% url 'sign_up_n' %}">Sign up</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'sign_up_n' %}">Sign up</a></li>
           {% endif %}
           {% if active_page == "reset_password" %}
-          <li class="active"><a href="{% url 'reset_password_n' %}">Forgot password</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'reset_password_n' %}">Forgot password</a></li>
           {% else %}
-          <li><a href="{% url 'reset_password_n' %}">Forgot password</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reset_password_n' %}">Forgot password</a></li>
           {% endif %}
           {% endif %}
           {% if user_authenticated %}
           {% if active_page == "change_password" %}
-          <li class="active"><a href="{% url 'change_password_n' %}">Change password</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'change_password_n' %}">Change password</a></li>
           {% else %}
-          <li><a href="{% url 'change_password_n' %}">Change password</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'change_password_n' %}">Change password</a></li>
           {% endif %}
-          <li class="float-right"><a href="{% url 'logout_n' %}">Logout</a></li>
-          {% endif %}
-          <form class="navbar-form navbar-left" action="{% url 'home_target_n' 'search_paylists' %}" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-              <input type="text" required name="playlists_keys" class="form-control" placeholder="Search playlist">
-            </div>
-            <button type="submit" class="btn btn-default">Search</button>
-          </form>  
+          <li class="float-right"><a class="nav-link" href="{% url 'logout_n' %}">Logout</a></li>
+          {% endif %} 
         </ul>
+        <form class="form-inline my-2 my-lg-0" action="{% url 'home_target_n' 'search_paylists' %}" method="POST">
+          {% csrf_token %}
+          <input type="text" required name="playlists_keys" class="form-control mr-sm-2" placeholder="Search playlist">
+          <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+        </form> 
       </div>
     </div>
   </nav>
 
-<div class="container" style="margin-top: 50px;">
+<div class="container" style="margin-top: 20px">
 {% block content %}
 
 {% endblock %}

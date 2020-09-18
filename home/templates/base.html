@@ -6,12 +6,8 @@
   {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -28,40 +24,92 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
           {% if active_page == "home" %}
-          <li class="nav-item active"><a class="nav-link" href="{% url 'home_n' %}">Home</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'home_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 16 21" class="bi bi-house-door-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.5 10.995V14.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5V11c0-.25-.25-.5-.5-.5H7c-.25 0-.5.25-.5.495z"/>
+              <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+            </svg>
+            Home</a></li>
           {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'home_n' %}">Home</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home_n' %}">
+              <svg width="1.5em" height="1.5em" viewBox="0 0 16 21" class="bi bi-house-door" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M7.646 1.146a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1-.5-.5v-4H7v4a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6zM2.5 7.707V14H6v-4a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4h3.5V7.707L8 2.207l-5.5 5.5z"/>
+                <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+              </svg>
+              Home</a></li>
           {% endif %}
           {% if not user_authenticated %}
           {% if active_page == "sign_in" %}
-          <li class="nav-item active"><a class="nav-link" href="{% url 'sign_in_n' %}">Sing in</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'sign_in_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 20" class="bi bi-person-check-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9.854-2.854a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+            </svg>
+            Sing in</a></li>
           {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'sign_in_n' %}">Sing in</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'sign_in_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 20" class="bi bi-person-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10zm4.854-7.85a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+            </svg>
+            Sing in</a></li>
           {% endif %}
           {% if active_page == "sign_up" %}
-          <li class="nax-item active"><a class="nav-link" href="{% url 'sign_up_n' %}">Sign up</a></li>
+          <li class="nax-item active"><a class="nav-link" href="{% url 'sign_up_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 20" class="bi bi-person-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7.5-3a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+            Sign up</a></li>
           {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'sign_up_n' %}">Sign up</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'sign_up_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 20" class="bi bi-person-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10zM13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+            Sign up</a></li>
           {% endif %}
           {% if active_page == "reset_password" %}
-          <li class="nav-item active"><a class="nav-link" href="{% url 'reset_password_n' %}">Forgot password</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'reset_password_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 21" class="bi bi-door-closed-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M4 1a1 1 0 0 0-1 1v13H1.5a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2a1 1 0 0 0-1-1H4zm2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+            </svg>
+            Forgot password</a></li>
           {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'reset_password_n' %}">Forgot password</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reset_password_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 21" class="bi bi-door-closed" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z"/>
+              <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z"/>
+            </svg>
+            Forgot password</a></li>
           {% endif %}
           {% endif %}
           {% if user_authenticated %}
           {% if active_page == "change_password" %}
-          <li class="nav-item active"><a class="nav-link" href="{% url 'change_password_n' %}">Change password</a></li>
+          <li class="nav-item active"><a class="nav-link" href="{% url 'change_password_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 22" class="bi bi-shield-shaded" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M5.443 1.991a60.17 60.17 0 0 0-2.725.802.454.454 0 0 0-.315.366C1.87 7.056 3.1 9.9 4.567 11.773c.736.94 1.533 1.636 2.197 2.093.333.228.626.394.857.5.116.053.21.089.282.11A.73.73 0 0 0 8 14.5c.007-.001.038-.005.097-.023.072-.022.166-.058.282-.111.23-.106.525-.272.857-.5a10.197 10.197 0 0 0 2.197-2.093C12.9 9.9 14.13 7.056 13.597 3.159a.454.454 0 0 0-.315-.366c-.626-.2-1.682-.526-2.725-.802C9.491 1.71 8.51 1.5 8 1.5c-.51 0-1.49.21-2.557.491zm-.256-.966C6.23.749 7.337.5 8 .5c.662 0 1.77.249 2.813.525a61.09 61.09 0 0 1 2.772.815c.528.168.926.623 1.003 1.184.573 4.197-.756 7.307-2.367 9.365a11.191 11.191 0 0 1-2.418 2.3 6.942 6.942 0 0 1-1.007.586c-.27.124-.558.225-.796.225s-.526-.101-.796-.225a6.908 6.908 0 0 1-1.007-.586 11.192 11.192 0 0 1-2.417-2.3C2.167 10.331.839 7.221 1.412 3.024A1.454 1.454 0 0 1 2.415 1.84a61.11 61.11 0 0 1 2.772-.815z"/>
+              <path d="M8 2.25c.909 0 3.188.685 4.254 1.022a.94.94 0 0 1 .656.773c.814 6.424-4.13 9.452-4.91 9.452V2.25z"/>
+            </svg>
+            Change password</a></li>
           {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'change_password_n' %}">Change password</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'change_password_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 22" class="bi bi-shield-shaded" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M5.443 1.991a60.17 60.17 0 0 0-2.725.802.454.454 0 0 0-.315.366C1.87 7.056 3.1 9.9 4.567 11.773c.736.94 1.533 1.636 2.197 2.093.333.228.626.394.857.5.116.053.21.089.282.11A.73.73 0 0 0 8 14.5c.007-.001.038-.005.097-.023.072-.022.166-.058.282-.111.23-.106.525-.272.857-.5a10.197 10.197 0 0 0 2.197-2.093C12.9 9.9 14.13 7.056 13.597 3.159a.454.454 0 0 0-.315-.366c-.626-.2-1.682-.526-2.725-.802C9.491 1.71 8.51 1.5 8 1.5c-.51 0-1.49.21-2.557.491zm-.256-.966C6.23.749 7.337.5 8 .5c.662 0 1.77.249 2.813.525a61.09 61.09 0 0 1 2.772.815c.528.168.926.623 1.003 1.184.573 4.197-.756 7.307-2.367 9.365a11.191 11.191 0 0 1-2.418 2.3 6.942 6.942 0 0 1-1.007.586c-.27.124-.558.225-.796.225s-.526-.101-.796-.225a6.908 6.908 0 0 1-1.007-.586 11.192 11.192 0 0 1-2.417-2.3C2.167 10.331.839 7.221 1.412 3.024A1.454 1.454 0 0 1 2.415 1.84a61.11 61.11 0 0 1 2.772-.815z"/>
+              <path d="M8 2.25c.909 0 3.188.685 4.254 1.022a.94.94 0 0 1 .656.773c.814 6.424-4.13 9.452-4.91 9.452V2.25z"/>
+            </svg>
+            Change password</a></li>
           {% endif %}
-          <li class="float-right"><a class="nav-link" href="{% url 'logout_n' %}">Logout</a></li>
+          <li class="float-right"><a class="nav-link" href="{% url 'logout_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 21" class="bi bi-door-open" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M1 15.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5zM11.5 2H11V1h.5A1.5 1.5 0 0 1 13 2.5V15h-1V2.5a.5.5 0 0 0-.5-.5z"/>
+              <path fill-rule="evenodd" d="M10.828.122A.5.5 0 0 1 11 .5V15h-1V1.077l-6 .857V15H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117z"/>
+              <path d="M8 9c0 .552.224 1 .5 1s.5-.448.5-1-.224-1-.5-1-.5.448-.5 1z"/>
+            </svg>
+            Logout</a></li>
           {% endif %} 
         </ul>
         <form class="form-inline my-2 my-lg-0" action="{% url 'home_target_n' 'search_paylists' %}" method="POST">
           {% csrf_token %}
           <input type="text" required name="playlists_keys" class="form-control mr-sm-2" placeholder="Search playlist">
-          <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+          <button type="submit" class="btn btn-outline-secondary my-2 my-sm-0">Search</button>
         </form> 
       </div>
     </div>

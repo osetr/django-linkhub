@@ -5,8 +5,8 @@
 {% block content %}
   <div id="links_to_add">
     <form action="{% url 'edit_playlist_n' pk %}" method="POST">
-    <button v-on:click.prevent class="btn btn-outline-danger pull-right">Delete</button>
-    <button class="btn btn-primary pull-right" style="margin-right: 10px;">Save changes</button>
+    <button v-on:click.prevent class="btn btn-outline-danger float-right">Remove playlist</button>
+    <button class="btn btn-primary float-right" style="margin-right: 10px;">Save changes</button>
     <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
     <h5 class="h5" id="head_banner">{% trans "" %}</h5>
         {% csrf_token %}
@@ -19,19 +19,35 @@
         <input v-model="all_links" type="hidden" name="links">
     </form>
 
+    <h4><label for="new_link">Add new links</label></h4>
 
-    <form v-on:submit.prevent="addNewLink">
-      <label for="new_link">Add new link</label>
-      <input
-        v-model="newLink"
-        id="new_link"
-        placeholder="New link">
-      <button>Добавить</button>
+    <form v-on:submit.prevent="addNewLink" class="form-inline">
+
+      <div class="form-group mx-sm-3 mb-2">
+        <input class="form-control"
+            v-model="newLink"
+            id="new_link"
+            placeholder="New link">
+      </div>
+          
+      <button class="btn btn-outline-success mb-2" style="border: none;">+ Add</button>
+
     </form>
     <ul>
-      <li
-        v-for="todo in todos"
-      >[[ todo.link ]] <input v-model="todo.description" placeholder="Add description"><input v-model="todo.check" type="checkbox"><button @click="deleteLink(todo.id)">Delete</button></li>
+      <li v-for="todo in todos" style="margin-top: 20px; border: 1px solid rgb(218, 174, 174); padding: 10px; border-radius: 5px;background-color: rgb(255, 244, 244);">
+        <a href="">[[ todo.link ]]</a>
+        <div class="form-group mb-2 float-right">
+          <button @click="deleteLink(todo.id)" class="btn btn-outline-danger" style="border: none; padding: 3px;">Delete link</button>
+        </div>
+        <div class="form-group mb-2">
+          <input v-model="todo.description" placeholder="Add description if necessary" class="form-control">
+        </div>
+        <div class="form-group mb-2">
+          <span>Check relevance: </span>
+          <input v-model="todo.check" type="checkbox">
+        </div>
+        
+        </li>
     </ul>
   </div>
 

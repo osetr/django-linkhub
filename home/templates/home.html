@@ -116,7 +116,6 @@
         <svg width="1.6em" height="1.6em" viewBox="0 0 16 16" class="bi bi-three-dots" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
         </svg>
-        
       </button></a></div>
       <div class="float-right" style="padding-right : 15px;"><a href="{% url 'add_new_link_n' playlist.id %}"><button class="btn btn-outline-primary" style="border: none">+ New link</button></a></div>
     {% elif user_authenticated %}
@@ -132,10 +131,10 @@
   </div>
 
     <div class="card-body">
-        <p>{{ playlist.description }}</p>
+        <p style="padding-left: 5px;">{{ playlist.description }}</p>
 
         <div class="panel-footer" style="padding-bottom: 0px;">
-          <a href="{% url 'show_playlist_n' playlist.id %}">Show >>></a>
+          <a href="{% url 'show_playlist_n' playlist.id %}"><button class="btn btn-outline-info" style="border: none; padding-left: 5px;">Show >>></button></a>
           <span class="float-right">
               {% if playlist.is_private %}
               <img src="https://img.icons8.com/metro/22/000000/lock-2.png"/>

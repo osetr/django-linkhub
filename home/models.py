@@ -13,6 +13,7 @@ class Playlist(models.Model):
     likes = models.IntegerField(default=0, editable=False)
     dislikes = models.IntegerField(default=0, editable=False)
     is_private = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False, editable=False)
 
     def __str__(self):
         return "%s by %s" % (self.title, self.author)

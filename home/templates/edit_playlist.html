@@ -3,10 +3,11 @@
 
 
 {% block content %}
-  <div id="links_to_add">
+  <div id="edit_playlist">
     <form action="{% url 'edit_playlist_n' pk %}" method="POST">
-    <button v-on:click.prevent class="btn btn-outline-danger float-right">Remove playlist</button>
-    <button class="btn btn-primary float-right" style="margin-right: 10px;">Save changes</button>
+    <button v-if="!playlist_deleted" @click.prevent="remove_playlist" class="btn btn-outline-danger float-right">Remove playlist</button>
+    <button v-if="playlist_deleted" @click.prevent="restore_playlist" class="btn btn-outline-dark float-right">Restore playlist</button>
+    <button v-if="!playlist_deleted" class="btn btn-primary float-right" style="margin-right: 10px;">Save changes</button>
     <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
     <h5 class="h5" id="head_banner">{% trans "" %}</h5>
         {% csrf_token %}
@@ -55,11 +56,12 @@
     <script>
       obj = new Vue({
       delimiters: ["[[", "]]"],
-      el: '#links_to_add',
+      el: '#edit_playlist',
       data: {
           newLink: '',
           todos: [],
-          nextTodoId: 1
+          nextTodoId: 1,
+          playlist_deleted: '{{ playlist_deleted }}' == 'True'
       },
       methods: {
           addNewLink: function () {
@@ -79,6 +81,36 @@
                   this.todos.splice(i,1);
                   break;
               }
+          },
+
+          remove_playlist() {
+            $.ajax({
+                vue: this,
+                type: 'GET',
+                async: true,
+                url: "{% url 'remove_playlist_n' pk %}",
+                success: function(data) {
+                  if (data['response'] == 'success'){
+                    this.vue.playlist_deleted = true
+                  }
+                },
+                dataType: 'json',
+            });
+          },
+
+          restore_playlist() {
+            $.ajax({
+                vue: this,
+                type: 'GET',
+                async: true,
+                url: "{% url 'restore_playlist_n' pk %}",
+                success: function(data) {
+                  if (data['response'] == 'success'){
+                    this.vue.playlist_deleted = false
+                  }
+                },
+                dataType: 'json',
+            });
           }
       },
       computed: {

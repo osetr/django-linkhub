@@ -134,6 +134,32 @@ def show_introduction_ajax(request):
         raise Http404
 
 
+def remove_playlist_ajax(request, pk):
+    try:
+        playlist = Playlist.objects.get(pk=pk)
+        playlist.deleted = True
+        playlist.save()
+    except:
+        response = {"response": "failed"}
+    else:
+        response = {"response": "success"}
+    finally:
+        return JsonResponse({"response": "success"})
+
+
+def restore_playlist_ajax(request, pk):
+    try:
+        playlist = Playlist.objects.get(pk=pk)
+        playlist.deleted = False
+        playlist.save()
+    except:
+        response = {"response": "failed"}
+    else:
+        response = {"response": "success"}
+    finally:
+        return JsonResponse({"response": "success"})
+
+
 class HomeView(View):
     def get(self, request, target="main"):
         user_authenticated = request.user.is_authenticated
@@ -260,6 +286,7 @@ class EditPlaylistView(View):
         form = AddNewPlaylistForm(
             {"title": title, "description": description, "is_private": is_private}
         )
+        playlist_deleted = playlist.deleted
         user_authenticated = request.user.is_authenticated
         links = Link.objects.filter(playlist_id=pk).all()
 
@@ -271,6 +298,7 @@ class EditPlaylistView(View):
                 "form": form,
                 "pk": pk,
                 "links": links,
+                "playlist_deleted": playlist_deleted,
             },
         )
 

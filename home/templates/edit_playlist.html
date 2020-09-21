@@ -83,7 +83,7 @@
               }
           },
 
-          remove_playlist() {
+          remove_playlist: function() {
             $.ajax({
                 vue: this,
                 type: 'GET',
@@ -98,7 +98,7 @@
             });
           },
 
-          restore_playlist() {
+          restore_playlist: function() {
             $.ajax({
                 vue: this,
                 type: 'GET',

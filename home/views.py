@@ -255,6 +255,10 @@ class HomeView(View):
         )
 
 
+class ShowPlaylistsView(View):
+    pass
+
+
 class AddNewPlaylistView(View):
     def get(self, request):
         form = AddNewPlaylistForm()

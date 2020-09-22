@@ -23,6 +23,7 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
+
           {% if active_page == "home" %}
           <li class="nav-item active"><a class="nav-link" href="{% url 'home_n' %}">
             <svg width="1.5em" height="1.5em" viewBox="0 0 16 21" class="bi bi-house-door-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -39,6 +40,7 @@
               </svg>
               Home</a></li>
           {% endif %}
+
           {% if not user_authenticated %}
           {% if active_page == "sign_in" %}
           <li class="nav-item active"><a class="nav-link" href="{% url 'sign_in_n' %}">
@@ -81,7 +83,23 @@
             Forgot password</a></li>
           {% endif %}
           {% endif %}
+
           {% if user_authenticated %}
+          {% if active_page == "my_playlists" %}
+          <li class="nav-item active"><a class="nav-link" href="{% url 'show_playlists_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 21" class="bi bi-file-earmark-text-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M2 2a2 2 0 0 1 2-2h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm7 2l.5-2.5 3 3L10 5a1 1 0 0 1-1-1zM4.5 8a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+            My playlists</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'show_playlists_n' %}">
+            <svg width="1.5em" height="1.5em" viewBox="0 0 14 21" class="bi bi-file-earmark-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+              <path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3z"/>
+              <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+            My playlists</a></li>
+          {% endif %}
           {% if active_page == "change_password" %}
           <li class="nav-item active"><a class="nav-link" href="{% url 'change_password_n' %}">
             <svg width="1.5em" height="1.5em" viewBox="0 0 14 22" class="bi bi-shield-shaded" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -105,12 +123,15 @@
             </svg>
             Logout</a></li>
           {% endif %} 
+
         </ul>
+
         <form class="form-inline my-2 my-lg-0" action="{% url 'show_playlists_n' %}" method="POST">
           {% csrf_token %}
           <input type="text" required name="playlists_keys" class="form-control mr-sm-2" placeholder="Search playlist">
           <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
         </form> 
+
       </div>
     </div>
   </nav>

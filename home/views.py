@@ -231,7 +231,6 @@ class ShowPlaylistsView(View):
         else:
             page_header = "Playlist's list"
             list_empty = False
-        print(inherited_playlists)
         return render(
             request,
             "show_playlists.html",
@@ -239,6 +238,7 @@ class ShowPlaylistsView(View):
                 "user_authenticated": user_authenticated, # set availability of inheritence
                 "page_header": page_header, # html page header
                 "playlists": playlists, # all playlists (own&inherited)
+                "active_page": "my_playlists", # separeate active and non active pages on navbar
                 "list_empty": list_empty, # boolean, required for either showing content or not
                 "inherited_playlists": inherited_playlists, # check if playlist is allready inherited
             },
@@ -284,7 +284,6 @@ class ShowPlaylistsView(View):
             playlists = filter_by_keys(playlists_keys, playlists) #searching by keys
             page_header = "Playlist's list"
             list_empty = False
-        print(inherited_playlists)
         return render(
             request,
             "show_playlists.html",
@@ -317,7 +316,7 @@ class AddNewPlaylistView(View):
             playlist = form.save(commit=False)
             playlist.author = request.user
             playlist.save()
-        return redirect("home_n")
+        return redirect("show_playlists_n")
 
 
 class EditPlaylistView(View):

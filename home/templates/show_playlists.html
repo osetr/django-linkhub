@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<a class="float-right" href="{% url 'add_new_playlist_n' %}"><button type="button" name="request_of" class="btn btn-outline-primary" style="margin: 1px;">+Add new playlist</button></a>
 <h2>{{ page_header }}</h2>
 {% if not list_empty %}
 <div id="show_playlists">

@@ -348,6 +348,7 @@ class AddNewPlaylistView(View):
 
         if form.is_valid():
             playlist = form.save(commit=False)
+            playlist.background_color = request.POST.get("color", "")
             playlist.author = request.user
             playlist.save()
         return redirect("show_playlists_n")

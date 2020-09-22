@@ -9,25 +9,25 @@
 <div id="add_playlist">
   <form action="{% url 'add_new_playlist_n' %}" method="POST">
     {% csrf_token %}
-    <div class="form-group"><label for="id_title"><label for="id_title">Title:</label></label> <input type="text"
-        name="title" maxlength="50" placeholder="Enter title" required="required" id="id_title" class="form-control">
+    <div class="form-group"><label for="id_title"><label for="id_title">Title:</label></label> <input v-model="title" type="text"
+      name="title" maxlength="50" placeholder="Enter title" required="required" id="id_title" class="form-control">
     </div>
     <div class="form-group"><label for="id_description"><label for="id_description">Description:</label></label> <input
-        type="text" name="description" maxlength="1024" placeholder="Enter description" id="id_description"
-        class="form-control"></div>
+      v-model="description" type="text" name="description" maxlength="1024" placeholder="Enter description" id="id_description"
+      class="form-control"></div>
     <div class="form-group float-right"><label for="id_is_private">
       <label for="body">Background</label>
-      <input type="color" id="body" name="body" value="#F7F7F7">
+      <input v-model:value="color" type="color" id="color" name="color" value="#F7F7F7">
     </div>
     <div class="form-group"><label for="id_is_private"><label for="id_is_private">Make private:</label></label> <input
-      type="checkbox" name="is_private" id="id_is_private">
+      v-model="checked" type="checkbox" name="is_private" id="id_is_private">
     </div>
     <button type="submit" class="btn btn-outline-secondary">Save</button>
   </form>
 
   <div class="card" style="margin-top: 20px;">
 
-    <div class="card-header" style="background-color: #F7F7F7;">
+    <div class="card-header" v-bind:style="{ backgroundColor: color }">
       <div class="float-right">
         <a>
           <button class="btn btn-outline-dark" style="padding-right: 5px; padding-left: 5px; border: none;">
@@ -44,7 +44,7 @@
           <button class="btn btn-outline-primary" style="border: none">+ New link</button>
         </a>
       </div>
-      <h3>playlist.title</h3>
+      <h3>[[ title ]]</h3>
     </div>
 
     <div class="card-body">
@@ -56,7 +56,7 @@
           </button>
         </a>
         <span class="float-right">
-          <div v-if="private">
+          <div v-if="checked">
             <img src="https://img.icons8.com/metro/22/000000/lock-2.png" />
           </div>
           <div v-else>
@@ -84,18 +84,6 @@
   </div>
 </div>
 
-<script>
-  obj = new Vue({
-    el: '#add_playlist',
-    delimiters: ["[[", "]]"],
-    data: {
-      private: false,
-    },
-    computed: {
-      description: function () {
-        return document.getElementById("#myId");
-      }
-    }
-  });
-</script>
+{% load static %}
+<script src="{% static '/js/add_playlist.js' %}"></script>
 {% endblock %}

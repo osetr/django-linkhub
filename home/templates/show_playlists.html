@@ -11,7 +11,7 @@
   {% if not playlist.is_private or user.id == playlist.author_id %}
   <div class="card" style="margin-bottom: 20px;">
 
-    <div class="card-header">
+    <div class="card-header" style="background-color: {{ playlist.background_color }};">
       {% if playlist.author_id == user.id %}
       <div class="float-right">
         <a href="{% url 'edit_playlist_n' playlist.id %}">

@@ -27,14 +27,16 @@
         <input class="form-control"
             v-model="newLink"
             id="new_link"
-            placeholder="New link">
+            placeholder="New link"
+            type="url"
+            required>
       </div>
       <button class="btn btn-outline-success mb-2" style="border: none;">+ Add</button>
     </form>
 
     <ul>
       <li v-for="todo in todos" style="margin-top: 20px; border: 1px solid rgb(218, 174, 174); padding: 10px; border-radius: 5px;background-color: rgb(255, 244, 244);">
-        <a href="">[[ todo.link ]]</a>
+        <a v-bind:href="todo.link">[[ todo.link ]]</a>
         <div class="form-group mb-2 float-right">
           <button @click="deleteLink(todo.id)" class="btn btn-outline-danger" style="border: none; padding: 3px;">Delete link</button>
         </div>

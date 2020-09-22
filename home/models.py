@@ -15,6 +15,7 @@ class Playlist(models.Model):
     is_private = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False, editable=False)
     background_color = models.CharField(max_length=8, editable=False, default="#F7F7F7")
+    inheritences_amount = models.IntegerField(default=0, editable=False)
 
     def __str__(self):
         return "%s by %s" % (self.title, self.author)

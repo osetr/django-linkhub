@@ -105,9 +105,13 @@ def inherite_ajax(request, pk):
         if not playlist.is_private:
             inheritence = Inheritence(playlist=playlist, inherited_by=current_user)
             inheritence.save()
+            playlist.inheritences_amount += 1
+            playlist.save()
             response = "inhereted successfuly"
     else:
         inheritence.delete()
+        playlist.inheritences_amount -= 1
+        playlist.save()
         response = "inheretence deleted"
     if request.is_ajax():
         response = {"response": response}

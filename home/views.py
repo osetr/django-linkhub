@@ -231,7 +231,7 @@ class ShowPlaylistsView(View):
         else:
             page_header = "Playlist's list"
             list_empty = False
-
+        print(inherited_playlists)
         return render(
             request,
             "show_playlists.html",
@@ -284,7 +284,7 @@ class ShowPlaylistsView(View):
             playlists = filter_by_keys(playlists_keys, playlists) #searching by keys
             page_header = "Playlist's list"
             list_empty = False
-
+        print(inherited_playlists)
         return render(
             request,
             "show_playlists.html",

@@ -28,7 +28,7 @@
       </div>
 
       {% elif user_authenticated %}
-      <div @click="inherite_playlist({{playlist.id}})" id="inherite_playlist{{ playlist.id }}" class="float-right">
+      <div id="inherite_playlist{{ playlist.id }}" class="float-right" @click="inherite_playlist({{playlist.id}})">
         {% if playlist.id in inherited_playlists %}
           <img src="https://img.icons8.com/flat_round/23/000000/star--v1.png" />
         {% else %}
@@ -70,8 +70,8 @@
     </div>
   </div>
   {% endif %}
-</div>
 {% endfor %}
+</div>
 {% endif %}
 
 {% load static %}

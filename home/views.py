@@ -125,7 +125,7 @@ def show_introduction_ajax(request):
     else:
         introinfo.show = 0
     introinfo.save()
-        
+
     if request.is_ajax():
         response = {"response": "success"}
 
@@ -161,10 +161,16 @@ def restore_playlist_ajax(request, pk):
 
 
 class HomeView(View):
-    def get(self, request, target="main"):
+    """
+        View to show introductory info and availability
+        of site functionality, depending on either user 
+        is authenticated or not.
+    """
+    def get(self, request):
         user_authenticated = request.user.is_authenticated
         inherited_playlists = []
-        show = 1
+        show = True
+
         if user_authenticated:
             try:
                 introinfo = IntroInfo.objects.filter(author=request.user).get()
@@ -178,47 +184,31 @@ class HomeView(View):
                     Inheritence.objects.filter(inherited_by=request.user).values(),
                 )
             )
-        if target == "main":
-            return render(
-                request,
-                "home.html",
-                context={
-                    "user_authenticated": user_authenticated,
-                    "active_page": "home",
-                    "target": target,
-                    "inherited_playlists": inherited_playlists,
-                    "show": show,
-                },
-            )
-        elif target == "personal_playlists":
-            playlists = list(Playlist.objects.filter(author=request.user.id).values())
-            for inh_playlist_pk in inherited_playlists:
-                playlists.append(Playlist.objects.get(pk=inh_playlist_pk))
-            if not playlists:
-                page_header = "Nothing found"
-                playlists = "List is empty"
-            else:
-                page_header = "Playlist's list"
-            return render(
-                request,
-                "home.html",
-                context={
-                    "user_authenticated": user_authenticated,
-                    "page_header": page_header,
-                    "playlists": playlists,
-                    "target": target,
-                    "inherited_playlists": inherited_playlists,
-                    "show": show,
-                },
-            )
-        else:
-            raise Http404
+        return render(
+            request,
+            "home.html",
+            context={
+                "user_authenticated": user_authenticated, # availability of site functionality
+                "active_page": "home", # separeate active and non active pages on navbar
+                "show": show, #show ot not introductory info
+            },
+        )
 
-    def post(self, request, target="search_playlists"):
+
+class ShowPlaylistsView(View):
+    """
+    This class based view created to show playlists list, 
+    depending on user's request. It gonna work either user 
+    require their own playlists(plus inherited) or searching
+    by keys. Actually GET request serves for first one and
+    POST for second one.
+    """
+    def get(self, request):
         user_authenticated = request.user.is_authenticated
-        playlists_keys = request.POST.get("playlists_keys", "")
-        playlists = list(Playlist.objects.values())
-        inherited_playlists = []
+        playlists = list(
+            Playlist.objects.filter(author=request.user.id).values()
+        )
+
         if user_authenticated:
             inherited_playlists = list(
                 map(
@@ -226,37 +216,86 @@ class HomeView(View):
                     Inheritence.objects.filter(inherited_by=request.user).values(),
                 )
             )
+        else:
+            inherited_playlists = []
 
-        def amount_of_occurences(str):
-            general_amount = 0
-            for key in playlists_keys.split():
-                general_amount += len(re.findall(key, str["title"]))
-                general_amount += len(re.findall(key, str["description"]))
-            return general_amount
+        for playlist_pk in inherited_playlists:
+            playlists.append(Playlist.objects.get(pk=playlist_pk))
+        # at this point we have all playlists(own and inherited) 
+        # in on variable "playlists"
 
-        playlists.sort(
-            key=lambda a: (amount_of_occurences(a), int(a["likes"])), reverse=True
-        )
+        # set html page header and content depending on playlists presence
         if not playlists:
             page_header = "Nothing found"
-            playlists = "List is empty"
+            list_empty = True
         else:
             page_header = "Playlist's list"
+            list_empty = False
+
         return render(
             request,
-            "home.html",
+            "show_playlists.html",
             context={
-                "user_authenticated": user_authenticated,
-                "page_header": page_header,
-                "playlists": playlists,
-                "target": target,
-                "inherited_playlists": inherited_playlists,
+                "user_authenticated": user_authenticated, # set availability of inheritence
+                "page_header": page_header, # html page header
+                "playlists": playlists, # all playlists (own&inherited)
+                "list_empty": list_empty, # boolean, required for either showing content or not
+                "inherited_playlists": inherited_playlists, # check if playlist is allready inherited
             },
         )
 
+    def post(self, request):
+        def filter_by_keys(str, playlists):
+            """
+                Special function to exctract only required playlists
+                from whole load. Take str with string of keys and playlists.
+            """
+            def amount_of_occurences(str):
+                general_amount = 0
+                for key in playlists_keys.split():
+                    general_amount += len(re.findall(key, str["title"]))
+                    general_amount += len(re.findall(key, str["description"]))
+                return general_amount
+            playlists.sort(
+                key=lambda a: (amount_of_occurences(a), int(a["likes"])), 
+                reverse=True
+            )
+            return playlists
 
-class ShowPlaylistsView(View):
-    pass
+        user_authenticated = request.user.is_authenticated
+        playlists_keys = request.POST.get("playlists_keys", "")
+        playlists = list(Playlist.objects.values())
+        inherited_playlists = []
+
+        if not playlists:
+            page_header = "Nothing found"
+            playlists = "List is empty"
+            list_empty = True
+        else:
+            if user_authenticated:
+                inherited_playlists = list(
+                    map(
+                        lambda a: a["playlist_id"],
+                        Inheritence.objects
+                                   .filter(inherited_by=request.user)
+                                   .values(),
+                    )
+                )
+            playlists = filter_by_keys(playlists_keys, playlists) #searching by keys
+            page_header = "Playlist's list"
+            list_empty = False
+
+        return render(
+            request,
+            "show_playlists.html",
+            context={
+                "user_authenticated": user_authenticated, # set availability of inheritence
+                "page_header": page_header, # html page header
+                "playlists": playlists, # all playlists (own&inherited)
+                "list_empty": list_empty, # boolean, required for either showing content or not
+                "inherited_playlists": inherited_playlists, # check if playlist is allready inherited
+            },
+        )
 
 
 class AddNewPlaylistView(View):
@@ -359,6 +398,7 @@ class EditPlaylistView(View):
 
             playlist.save()
         return redirect("home_target_n", target="personal_playlists")
+
 
 class AddNewLinkView(View):
     def get(self, request, pk):

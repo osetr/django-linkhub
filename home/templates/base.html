@@ -106,7 +106,7 @@
             Logout</a></li>
           {% endif %} 
         </ul>
-        <form class="form-inline my-2 my-lg-0" action="{% url 'home_target_n' 'search_paylists' %}" method="POST">
+        <form class="form-inline my-2 my-lg-0" action="{% url 'show_playlists_n' %}" method="POST">
           {% csrf_token %}
           <input type="text" required name="playlists_keys" class="form-control mr-sm-2" placeholder="Search playlist">
           <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>

@@ -4,11 +4,25 @@ from .views import *
 urlpatterns = [
     path("home/", HomeView.as_view(), name="home_n"),
     path("home/playlists/", ShowPlaylistsView.as_view(), name="show_playlists_n"),
-    path("home/playlists/playlist/new", AddNewPlaylistView.as_view(), name="add_new_playlist_n"),
-    path("home/playlists/playlist/<pk>/edit/", EditPlaylistView.as_view(), name="edit_playlist_n"),
-    path("home/playlists/playlist/<pk>/show/", ShowPlaylistView.as_view(), name="show_playlist_n"),
     path(
-        "home/playlists/playlist/add_link/<pk>/", AddNewLinkView.as_view(), name="add_new_link_n"
+        "home/playlists/playlist/new",
+        AddNewPlaylistView.as_view(),
+        name="add_new_playlist_n",
+    ),
+    path(
+        "home/playlists/playlist/<pk>/edit/",
+        EditPlaylistView.as_view(),
+        name="edit_playlist_n",
+    ),
+    path(
+        "home/playlists/playlist/<pk>/show/",
+        ShowPlaylistView.as_view(),
+        name="show_playlist_n",
+    ),
+    path(
+        "home/playlists/playlist/<pk>/add_link/",
+        AddNewLinkView.as_view(),
+        name="add_new_link_n",
     ),
     path("logout/", LogOutView, name="logout_n"),
     path(r"^ajax/like_playlist/<pk>", like_ajax, name="like_ajax_n"),

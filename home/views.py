@@ -166,6 +166,7 @@ class HomeView(View):
         of site functionality, depending on either user 
         is authenticated or not.
     """
+
     def get(self, request):
         user_authenticated = request.user.is_authenticated
         inherited_playlists = []
@@ -188,9 +189,9 @@ class HomeView(View):
             request,
             "home.html",
             context={
-                "user_authenticated": user_authenticated, # availability of site functionality
-                "active_page": "home", # separeate active and non active pages on navbar
-                "show": show, #show ot not introductory info
+                "user_authenticated": user_authenticated,  # availability of site functionality
+                "active_page": "home",  # separeate active and non active pages on navbar
+                "show": show,  # show ot not introductory info
             },
         )
 
@@ -203,11 +204,10 @@ class ShowPlaylistsView(View):
     by keys. Actually GET request serves for first one and
     POST for second one.
     """
+
     def get(self, request):
         user_authenticated = request.user.is_authenticated
-        playlists = list(
-            Playlist.objects.filter(author=request.user.id).values()
-        )
+        playlists = list(Playlist.objects.filter(author=request.user.id).values())
 
         if user_authenticated:
             inherited_playlists = list(
@@ -221,7 +221,7 @@ class ShowPlaylistsView(View):
 
         for playlist_pk in inherited_playlists:
             playlists.append(Playlist.objects.get(pk=playlist_pk))
-        # at this point we have all playlists(own and inherited) 
+        # at this point we have all playlists(own and inherited)
         # in on variable "playlists"
 
         # set html page header and content depending on playlists presence
@@ -235,12 +235,12 @@ class ShowPlaylistsView(View):
             request,
             "show_playlists.html",
             context={
-                "user_authenticated": user_authenticated, # set availability of inheritence
-                "page_header": page_header, # html page header
-                "playlists": playlists, # all playlists (own&inherited)
-                "active_page": "my_playlists", # separeate active and non active pages on navbar
-                "list_empty": list_empty, # boolean, required for either showing content or not
-                "inherited_playlists": inherited_playlists, # check if playlist is allready inherited
+                "user_authenticated": user_authenticated,  # set availability of inheritence
+                "page_header": page_header,  # html page header
+                "playlists": playlists,  # all playlists (own&inherited)
+                "active_page": "my_playlists",  # separeate active and non active pages on navbar
+                "list_empty": list_empty,  # boolean, required for either showing content or not
+                "inherited_playlists": inherited_playlists,  # check if playlist is allready inherited
             },
         )
 
@@ -250,15 +250,16 @@ class ShowPlaylistsView(View):
                 Special function to exctract only required playlists
                 from whole load. Take str with string of keys and playlists.
             """
+
             def amount_of_occurences(str):
                 general_amount = 0
                 for key in playlists_keys.split():
                     general_amount += len(re.findall(key, str["title"]))
                     general_amount += len(re.findall(key, str["description"]))
                 return general_amount
+
             playlists.sort(
-                key=lambda a: (amount_of_occurences(a), int(a["likes"])), 
-                reverse=True
+                key=lambda a: (amount_of_occurences(a), int(a["likes"])), reverse=True
             )
             return playlists
 
@@ -276,28 +277,59 @@ class ShowPlaylistsView(View):
                 inherited_playlists = list(
                     map(
                         lambda a: a["playlist_id"],
-                        Inheritence.objects
-                                   .filter(inherited_by=request.user)
-                                   .values(),
+                        Inheritence.objects.filter(inherited_by=request.user).values(),
                     )
                 )
-            playlists = filter_by_keys(playlists_keys, playlists) #searching by keys
+            playlists = filter_by_keys(playlists_keys, playlists)  # searching by keys
             page_header = "Playlist's list"
             list_empty = False
         return render(
             request,
             "show_playlists.html",
             context={
-                "user_authenticated": user_authenticated, # set availability of inheritence
-                "page_header": page_header, # html page header
-                "playlists": playlists, # all playlists (own&inherited)
-                "list_empty": list_empty, # boolean, required for either showing content or not
-                "inherited_playlists": inherited_playlists, # check if playlist is allready inherited
+                "user_authenticated": user_authenticated,  # set availability of inheritence
+                "page_header": page_header,  # html page header
+                "playlists": playlists,  # all playlists (own&inherited)
+                "list_empty": list_empty,  # boolean, required for either showing content or not
+                "inherited_playlists": inherited_playlists,  # check if playlist is allready inherited
             },
         )
 
 
+class AddNewLinkView(View):
+    """
+        View for shortcut page for adding new links in playlistw
+    """
+
+    def get(self, request, pk):
+        form = AddNewLinkForm()
+        user_authenticated = request.user.is_authenticated
+
+        return render(
+            request,
+            "add_link.html",
+            context={
+                "user_authenticated": user_authenticated,  # adjust navbar functions
+                "form": form,
+                "pk": pk,  # pk of current playlist for save button request
+            },
+        )
+
+    def post(self, request, pk):
+        form = AddNewLinkForm(request.POST)
+
+        if form.is_valid():
+            link = form.save(commit=False)
+            link.playlist_id = pk
+            link.save()
+        return redirect("show_playlists_n")
+
+
 class AddNewPlaylistView(View):
+    """
+        View for adding new playlists
+    """
+
     def get(self, request):
         form = AddNewPlaylistForm()
         user_authenticated = request.user.is_authenticated
@@ -305,12 +337,14 @@ class AddNewPlaylistView(View):
         return render(
             request,
             "add_playlist.html",
-            context={"user_authenticated": user_authenticated, "form": form},
+            context={
+                "user_authenticated": user_authenticated,  # adjust navbar functions
+                "form": form,
+            },
         )
 
     def post(self, request):
         form = AddNewPlaylistForm(request.POST)
-        user_authenticated = request.user.is_authenticated
 
         if form.is_valid():
             playlist = form.save(commit=False)
@@ -324,6 +358,7 @@ class EditPlaylistView(View):
         View for editing info about playlist(title, description)
         and adding new links, and managing old ones
     """
+
     def get(self, request, pk):
         # here we just extract all info about playlist
         # and put them into forms
@@ -345,11 +380,11 @@ class EditPlaylistView(View):
             request,
             "edit_playlist.html",
             context={
-                "form": form, # form with all required data in it
-                "pk": pk, # pk of current playlist for ajax requests
-                "user_authenticated": user_authenticated, # adjust navbar functions
-                "links": links, # old links of current playlist
-                "playlist_deleted": playlist_deleted, # boolean to determine if playlist is deleted
+                "form": form,  # form with all required data in it
+                "pk": pk,  # pk of current playlist for ajax requests
+                "user_authenticated": user_authenticated,  # adjust navbar functions
+                "links": links,  # old links of current playlist
+                "playlist_deleted": playlist_deleted,  # boolean to determine if playlist is deleted
             },
         )
 
@@ -385,7 +420,7 @@ class EditPlaylistView(View):
             return result
 
         form = AddNewPlaylistForm(request.POST)
-        
+
         # in following code:
         # page_links - links from frontend(existing and new)
         # db_links - already existing links from database
@@ -419,27 +454,6 @@ class EditPlaylistView(View):
                     )
 
             playlist.save()
-        return redirect("show_playlists_n")
-
-
-class AddNewLinkView(View):
-    def get(self, request, pk):
-        form = AddNewLinkForm()
-        user_authenticated = request.user.is_authenticated
-
-        return render(
-            request,
-            "add_link.html",
-            context={"user_authenticated": user_authenticated, "form": form, "pk": pk},
-        )
-
-    def post(self, request, pk):
-        form = AddNewLinkForm(request.POST)
-
-        if form.is_valid():
-            link = form.save(commit=False)
-            link.playlist_id = pk
-            link.save()
         return redirect("show_playlists_n")
 
 

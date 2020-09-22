@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-
 {% block content %}
-    <h3 class="h3" id="head_banner">{% trans "Add link" %}</h3>
+    <h2 class="h2" id="head_banner">{% trans "Add link" %}</h2>
 
     <h5 class="h5" id="head_banner">{% trans "" %}</h5>
     <form action="{% url 'add_new_link_n' pk %}" method="POST">

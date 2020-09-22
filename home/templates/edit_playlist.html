@@ -5,35 +5,33 @@
 {% block content %}
   <div id="edit_playlist">
     <form action="{% url 'edit_playlist_n' pk %}" method="POST">
-    <button v-if="!playlist_deleted" @click.prevent="remove_playlist" class="btn btn-outline-danger float-right">Remove playlist</button>
-    <button v-if="playlist_deleted" @click.prevent="restore_playlist" class="btn btn-outline-dark float-right">Restore playlist</button>
-    <button v-if="!playlist_deleted" class="btn btn-primary float-right" style="margin-right: 10px;">Save changes</button>
-    <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
-    <h5 class="h5" id="head_banner">{% trans "" %}</h5>
-        {% csrf_token %}
-        {% for field in form %}
-          <div class="form-group">
-            <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
-            {{ field }}
-          </div>
-        {% endfor %}
-        <input v-model="all_links" type="hidden" name="links">
+      {% csrf_token %}
+      <button v-if="!playlist_deleted" @click.prevent="remove_playlist" class="btn btn-outline-danger float-right">Remove playlist</button>
+      <button v-if="playlist_deleted" @click.prevent="restore_playlist" class="btn btn-outline-dark float-right">Restore playlist</button>
+      <button v-if="!playlist_deleted" class="btn btn-primary float-right" style="margin-right: 10px;">Save changes</button>
+      <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
+      <h5 class="h5" id="head_banner">{% trans "" %}</h5>
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
+      <input v-model="all_links" type="hidden" name="links">
     </form>
 
     <h4><label for="new_link">Add new links</label></h4>
 
     <form v-on:submit.prevent="addNewLink" class="form-inline">
-
       <div class="form-group mx-sm-3 mb-2">
         <input class="form-control"
             v-model="newLink"
             id="new_link"
             placeholder="New link">
       </div>
-          
       <button class="btn btn-outline-success mb-2" style="border: none;">+ Add</button>
-
     </form>
+
     <ul>
       <li v-for="todo in todos" style="margin-top: 20px; border: 1px solid rgb(218, 174, 174); padding: 10px; border-radius: 5px;background-color: rgb(255, 244, 244);">
         <a href="">[[ todo.link ]]</a>
@@ -47,90 +45,24 @@
           <span>Check relevance: </span>
           <input v-model="todo.check" type="checkbox">
         </div>
-        
-        </li>
+      </li>
     </ul>
   </div>
 
 
-    <script>
-      obj = new Vue({
-      delimiters: ["[[", "]]"],
-      el: '#edit_playlist',
-      data: {
-          newLink: '',
-          todos: [],
-          nextTodoId: 1,
-          playlist_deleted: '{{ playlist_deleted }}' == 'True'
-      },
-      methods: {
-          addNewLink: function () {
-            this.todos.push({
-                id: this.nextTodoId++,
-                link: this.newLink,
-                description: '',
-                check: false,
-            })
-            this.newLink = ''
-          },
-
-          deleteLink(val) {
-            for (var i = 0; i < this.todos.length; i++)
-              if (this.todos[i].id === val) 
-              {
-                  this.todos.splice(i,1);
-                  break;
-              }
-          },
-
-          remove_playlist: function() {
-            $.ajax({
-                vue: this,
-                type: 'GET',
-                async: true,
-                url: "{% url 'remove_playlist_n' pk %}",
-                success: function(data) {
-                  if (data['response'] == 'success'){
-                    this.vue.playlist_deleted = true
-                  }
-                },
-                dataType: 'json',
-            });
-          },
-
-          restore_playlist: function() {
-            $.ajax({
-                vue: this,
-                type: 'GET',
-                async: true,
-                url: "{% url 'restore_playlist_n' pk %}",
-                success: function(data) {
-                  if (data['response'] == 'success'){
-                    this.vue.playlist_deleted = false
-                  }
-                },
-                dataType: 'json',
-            });
-          }
-      },
-      computed: {
-        all_links: function() {
-          var result = [];
-          for (var i = 0; i < this.todos.length; i++)
-              result.push("\
-                link:" + this.todos[i].link + ",\
-                description:" + this.todos[i].description + ",\
-                check:" + this.todos[i].check + ",\
-              ");
-          return result
-        }
-      }
-      })
-      {% for link in links %}
-        var link = '{{ link.link }}'
-        var description = '{{ link.description }}'
-        var check = '{{ link.check_relevance }}' == "True"
-        obj.todos.push({link: link, description: description, check: check})
-      {% endfor %}
-    </script>
+  {% load static %}
+  <script>
+    var url_remove_playlist = "{% url 'remove_playlist_n' pk %}"
+    var url_restore_playlist = "{% url 'restore_playlist_n' pk %}"
+    var playlist_deleted = '{{ playlist_deleted }}' == 'True'
+  </script>
+  <script src="{% static '/js/edit_playlist.js' %}"></script>
+  <script>
+    {% for link in links %}
+      var link = '{{ link.link }}'
+      var description = '{{ link.description }}'
+      var check = '{{ link.check_relevance }}' == "True"
+      obj.todos.push({link: link, description: description, check: check})
+    {% endfor %}
+  </script>
 {% endblock %} 

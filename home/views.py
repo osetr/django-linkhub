@@ -320,40 +320,59 @@ class AddNewPlaylistView(View):
 
 
 class EditPlaylistView(View):
+    """
+        View for editing info about playlist(title, description)
+        and adding new links, and managing old ones
+    """
     def get(self, request, pk):
+        # here we just extract all info about playlist
+        # and put them into forms
+        user_authenticated = request.user.is_authenticated
+
         playlist = Playlist.objects.get(pk=pk)
+
+        playlist_deleted = playlist.deleted
+        links = Link.objects.filter(playlist_id=pk).all()
+
         title = playlist.title
         description = playlist.description
         is_private = playlist.is_private
         form = AddNewPlaylistForm(
             {"title": title, "description": description, "is_private": is_private}
         )
-        playlist_deleted = playlist.deleted
-        user_authenticated = request.user.is_authenticated
-        links = Link.objects.filter(playlist_id=pk).all()
 
         return render(
             request,
             "edit_playlist.html",
             context={
-                "user_authenticated": user_authenticated,
-                "form": form,
-                "pk": pk,
-                "links": links,
-                "playlist_deleted": playlist_deleted,
+                "form": form, # form with all required data in it
+                "pk": pk, # pk of current playlist for ajax requests
+                "user_authenticated": user_authenticated, # adjust navbar functions
+                "links": links, # old links of current playlist
+                "playlist_deleted": playlist_deleted, # boolean to determine if playlist is deleted
             },
         )
 
     def post(self, request, pk):
         def data_to_json(data):
-            links = re.findall("link:.*?,", page_links)
-            descriptions = re.findall("description:.*?,", page_links)
-            checks = re.findall("check:.*?,", page_links)
+            """
+                Extract data from all links and put it
+                into convinient view(list of dictionries)
+                Actually this def takes only data parametr,
+                that have to get data from hidden field 
+                on front-end. Front-end save it in format:
+                " link:www.link.com, description:some description, check_relevance: true(false), "
+            """
+            links = re.findall("link:.*?,", data)
+            descriptions = re.findall("description:.*?,", data)
+            checks = re.findall("check:.*?,", data)
+
             links = list(map(lambda a: re.search("link:(.*?),", a).group(1), links))
             descriptions = list(
                 map(lambda a: re.search("description:(.*?),", a).group(1), descriptions)
             )
             checks = list(map(lambda a: re.search("check:(.*?),", a).group(1), checks))
+
             result = [
                 {
                     "link": links[i],
@@ -366,19 +385,23 @@ class EditPlaylistView(View):
             return result
 
         form = AddNewPlaylistForm(request.POST)
-        user_authenticated = request.user.is_authenticated
-
-        page_links = request.POST["links"]
-        page_links = data_to_json(page_links)
-
+        
+        # in following code:
+        # page_links - links from frontend(existing and new)
+        # db_links - already existing links from database
         if form.is_valid():
             playlist = Playlist.objects.get(pk=pk)
             playlist.title = form.cleaned_data["title"]
             playlist.description = form.cleaned_data["description"]
             playlist.is_private = form.cleaned_data["is_private"]
+
+            page_links = data_to_json(request.POST["links"])
+
             db_links = Link.objects.filter(playlist_id=pk).all()
+
+            all_page_links = [page_link["link"] for page_link in page_links]
             for db_link in db_links:
-                if not db_link.link in [page_link["link"] for page_link in page_links]:
+                if not db_link.link in all_page_links:
                     db_link.delete()
 
             for page_link in page_links:
@@ -396,7 +419,7 @@ class EditPlaylistView(View):
                     )
 
             playlist.save()
-        return redirect("home_target_n", target="personal_playlists")
+        return redirect("show_playlists_n")
 
 
 class AddNewLinkView(View):
@@ -417,7 +440,7 @@ class AddNewLinkView(View):
             link = form.save(commit=False)
             link.playlist_id = pk
             link.save()
-        return redirect("home_target_n", target="personal_playlists")
+        return redirect("show_playlists_n")
 
 
 class ShowPlaylistView(View):

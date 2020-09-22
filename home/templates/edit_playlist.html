@@ -9,7 +9,7 @@
       <button v-if="!playlist_deleted" @click.prevent="remove_playlist" class="btn btn-outline-danger float-right">Remove playlist</button>
       <button v-if="playlist_deleted" @click.prevent="restore_playlist" class="btn btn-outline-dark float-right">Restore playlist</button>
       <button v-if="!playlist_deleted" class="btn btn-primary float-right" style="margin-right: 10px;">Save changes</button>
-      <h3 class="h3" id="head_banner">{% trans "Edit playlist" %}</h3>
+      <h3 class="h2" id="head_banner">{% trans "Edit playlist" %}</h3>
       <h5 class="h5" id="head_banner">{% trans "" %}</h5>
       {% for field in form %}
         <div class="form-group">

@@ -39,5 +39,7 @@ urlpatterns = [
     ),
     path(r"^ajax/inherite_playlist/<pk>", inherite_ajax, name="inherite_ajax_n"),
     path(r"^ajax/inherite_playlist/", inherite_ajax, name="inherite_ajax_n"),
+    path(r"^ajax/check_alive/<pk>", check_alive_ajax, name="check_alive_ajax_n"),
+    path(r"^ajax/check_alive/", check_alive_ajax, name="check_alive_ajax_n"),
     path(r"^ajax/intro_show/$", show_introduction_ajax, name="show_intro_ajax_n"),
 ]

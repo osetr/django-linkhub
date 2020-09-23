@@ -7,9 +7,8 @@
 <div id="show_playlists">
 
   {% for playlist in playlists %}
-
   {% if not playlist.is_private or user.id == playlist.author_id %}
-  <div class="card" style="margin-bottom: 20px;">
+  <div v-if="!(opacity[{{playlist.id}}] < 0.1)" class="card" style="margin-bottom: 20px;" v-bind:style="{ opacity: opacity[{{playlist.id}}] }">
 
     <div class="card-header" style="background-color: {{ playlist.background_color }};">
       {% if playlist.author_id == user.id %}
@@ -80,6 +79,14 @@
   var url_like = "{% url 'like_ajax_n' %}";
   var url_dislike = "{% url 'dislike_ajax_n' %}";
   var url_inherite = "{% url 'inherite_ajax_n' %}";
+  var url_check_alive = "{% url 'check_alive_ajax_n' %}"
 </script>
 <script src="{% static '/js/show_playlists.js' %}"></script>
+{% for playlist in playlists %}
+  {% if playlist.deleted %}
+    <script>
+      obj.check_alive({{playlist.id}});
+    </script>
+  {% endif %}
+{% endfor %}
 {% endblock %}

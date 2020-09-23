@@ -1,7 +1,34 @@
 obj = new Vue({
     el: '#show_playlists',
     delimiters: ["[[", "]]"],
+    data:{
+        opacity: []
+    },
     methods: {
+        repeat_check(pk){
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: url_check_alive + pk,
+                success: function(data) {
+                    if (data['response'] == 'success')
+                    {
+                        op = data['blur']
+                    }
+                    else{
+                        op = 0
+                    }
+                },
+                dataType: 'json',
+            });
+            this.opacity.push({pk:1});
+            this.opacity[pk] = op
+        },
+        check_alive(pk){
+            this.opacity.push({pk:1});
+            this.opacity[pk] = 1
+            setInterval(this.repeat_check, 2000, pk);
+        },
         like(playlist_id) {
             $.ajax({
                 type: 'GET',

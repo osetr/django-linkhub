@@ -145,7 +145,7 @@ def remove_playlist_ajax(request, pk):
         playlist.deleted = True
         task = DeletingTask.objects.create(
             playlist=playlist, 
-            cherished_time=datetime.now() + timedelta(seconds=10)
+            cherished_time=datetime.now() + timedelta(seconds=100)
         )
         playlist.save()
     except:
@@ -168,6 +168,34 @@ def restore_playlist_ajax(request, pk):
         response = {"response": "success"}
     finally:
         return JsonResponse({"response": "success"})
+
+
+def restore_playlist_ajax(request, pk):
+    try:
+        playlist = Playlist.objects.get(pk=pk)
+        playlist.deleted = False
+        DeletingTask.objects.filter(playlist=playlist).delete()
+        playlist.save()
+    except:
+        response = {"response": "failed"}
+    else:
+        response = {"response": "success"}
+    finally:
+        return JsonResponse({"response": "success"})
+
+
+def check_alive_ajax(request, pk):
+    try:
+        task = DeletingTask.objects.get(playlist_id=pk)
+        time_future = task.cherished_time
+        time_now = datetime.now()
+        blur = (time_future-time_now).total_seconds()/100
+    except:
+        response = {"response": "failed"}
+    else:
+        response = {"response": "success", "blur": blur}
+    finally:
+        return JsonResponse(response)
 
 
 class HomeView(View):

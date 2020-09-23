@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link, Evaluating, Inheritence, IntroInfo
+from .models import Playlist, Link, Evaluating, Inheritence, IntroInfo, DeletingTask
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
 import re
 from django.http import Http404, JsonResponse
+from datetime import datetime, timedelta
 
 
 def like_ajax(request, pk):
@@ -142,6 +143,10 @@ def remove_playlist_ajax(request, pk):
     try:
         playlist = Playlist.objects.get(pk=pk)
         playlist.deleted = True
+        task = DeletingTask.objects.create(
+            playlist=playlist, 
+            cherished_time=datetime.now() + timedelta(seconds=10)
+        )
         playlist.save()
     except:
         response = {"response": "failed"}
@@ -155,6 +160,7 @@ def restore_playlist_ajax(request, pk):
     try:
         playlist = Playlist.objects.get(pk=pk)
         playlist.deleted = False
+        DeletingTask.objects.filter(playlist=playlist).delete()
         playlist.save()
     except:
         response = {"response": "failed"}
@@ -367,31 +373,34 @@ class EditPlaylistView(View):
     def get(self, request, pk):
         # here we just extract all info about playlist
         # and put them into forms
-        user_authenticated = request.user.is_authenticated
+        try:
+            user_authenticated = request.user.is_authenticated
 
-        playlist = Playlist.objects.get(pk=pk)
+            playlist = Playlist.objects.get(pk=pk)
 
-        playlist_deleted = playlist.deleted
-        links = Link.objects.filter(playlist_id=pk).all()
+            playlist_deleted = playlist.deleted
+            links = Link.objects.filter(playlist_id=pk).all()
 
-        title = playlist.title
-        description = playlist.description
-        is_private = playlist.is_private
-        form = AddNewPlaylistForm(
-            {"title": title, "description": description, "is_private": is_private}
-        )
+            title = playlist.title
+            description = playlist.description
+            is_private = playlist.is_private
+            form = AddNewPlaylistForm(
+                {"title": title, "description": description, "is_private": is_private}
+            )
 
-        return render(
-            request,
-            "edit_playlist.html",
-            context={
-                "form": form,  # form with all required data in it
-                "pk": pk,  # pk of current playlist for ajax requests
-                "user_authenticated": user_authenticated,  # adjust navbar functions
-                "links": links,  # old links of current playlist
-                "playlist_deleted": playlist_deleted,  # boolean to determine if playlist is deleted
-            },
-        )
+            return render(
+                request,
+                "edit_playlist.html",
+                context={
+                    "form": form,  # form with all required data in it
+                    "pk": pk,  # pk of current playlist for ajax requests
+                    "user_authenticated": user_authenticated,  # adjust navbar functions
+                    "links": links,  # old links of current playlist
+                    "playlist_deleted": playlist_deleted,  # boolean to determine if playlist is deleted
+                },
+            )
+        except Playlist.DoesNotExist:
+            return redirect("show_playlists_n")
 
     def post(self, request, pk):
         def data_to_json(data):
@@ -464,22 +473,26 @@ class EditPlaylistView(View):
 
 class ShowPlaylistView(View):
     def get(self, request, pk):
-        user_authenticated = request.user.is_authenticated
-        playlist = Playlist.objects.get(pk=pk)
-        links = list(Link.objects.filter(playlist_id=playlist.id).values())
-        author = User.objects.get(pk=playlist.author_id)
+        try:
+            user_authenticated = request.user.is_authenticated
+            playlist = Playlist.objects.get(pk=pk)
+            links = list(Link.objects.filter(playlist_id=playlist.id).values())
+            author = User.objects.get(pk=playlist.author_id)
 
-        return render(
-            request,
-            "show_playlist.html",
-            context={
-                "user_authenticated": user_authenticated,
-                "playlist": playlist,
-                "links": links,
-                "author": author,
-                "pk": pk,
-            },
-        )
+            return render(
+                request,
+                "show_playlist.html",
+                context={
+                    "user_authenticated": user_authenticated,
+                    "playlist": playlist,
+                    "links": links,
+                    "author": author,
+                    "pk": pk,
+                },
+            )
+        except Playlist.DoesNotExist:
+            return redirect("show_playlists_n")
+
 
 
 def LogOutView(request):

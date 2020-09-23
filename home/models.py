@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+from datetime import datetime, timedelta
 from accounts.models import User
 
 
@@ -19,6 +19,16 @@ class Playlist(models.Model):
 
     def __str__(self):
         return "%s by %s" % (self.title, self.author)
+
+
+class DeletingTask(models.Model):
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, default="", editable=False
+    )
+    cherished_time = models.DateTimeField(default=datetime.now(), editable=False)
+
+    def __str__(self):
+        return "%s gonna be deleted at %s" % (self.playlist, self.cherished_time)
 
 
 class Link(models.Model):

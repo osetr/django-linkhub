@@ -177,6 +177,8 @@ def check_alive_ajax(request, pk):
         time_future = task.cherished_time
         time_now = datetime.now()
         blur = (time_future-time_now).total_seconds()/100
+        if blur < 0:
+            Playlist.objects.get(pk=pk).delete()
     except:
         response = {"response": "failed"}
     else:

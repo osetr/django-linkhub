@@ -31,7 +31,7 @@ obj = new Vue({
         repeat_check(pk){
             $.ajax({
                 type: 'GET',
-                async: true,
+                async: false,
                 url: url_check_alive + pk,
                 success: function(data) {
                     if (data['response'] == 'success')
@@ -50,7 +50,7 @@ obj = new Vue({
         check_alive(pk){
             this.opacity.push({pk:1});
             this.opacity[pk] = 1
-            setInterval(this.repeat_check, 2000, pk);
+            setInterval(this.repeat_check, 1000, pk);
         },
         like(playlist_id) {
             $.ajax({

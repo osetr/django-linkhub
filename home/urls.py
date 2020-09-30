@@ -15,7 +15,12 @@ urlpatterns = [
         name="edit_playlist_n",
     ),
     path(
-        "home/playlists/playlist/<pk>/show/",
+        "home/playlists/playlist/<pk>",
+        ShowPlaylistView.as_view(),
+        name="show_playlist_n",
+    ),
+    path(
+        "home/playlists/playlist/",
         ShowPlaylistView.as_view(),
         name="show_playlist_n",
     ),
@@ -41,5 +46,7 @@ urlpatterns = [
     path(r"^ajax/inherite_playlist/", inherite_ajax, name="inherite_ajax_n"),
     path(r"^ajax/check_alive/<pk>", check_alive_ajax, name="check_alive_ajax_n"),
     path(r"^ajax/check_alive/", check_alive_ajax, name="check_alive_ajax_n"),
+    path(r"^ajax/create_private_link/<pk>", create_private_link_ajax, name="create_private_link_n"),
+    path(r"^ajax/create_private_link/", create_private_link_ajax, name="create_private_link_n"),
     path(r"^ajax/intro_show/$", show_introduction_ajax, name="show_intro_ajax_n"),
 ]

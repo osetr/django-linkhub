@@ -2,6 +2,14 @@
 {% load i18n %}
 
 {% block content %}
+  <style type='text/css'>
+    .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+  </style>
   <div id="show_playlists">
         {% if playlist.author_id == user.id %}
         <p class="float-right">
@@ -13,7 +21,20 @@
             </button></a>
         </p>
         {% endif %}
-        <h2>Playlist "{{ playlist.title }}"</h2>
+        <h2>Playlist "{{ playlist.title }}" 
+          {% if playlist.is_private %}
+            {% if playlist.author_id == user.id or pk == playlist.id %}
+              <div class="d-inline-block">
+                <img @click="save_to_clickboard({{ playlist.id }})" style="cursor: pointer;" src="https://img.icons8.com/ios-filled/30/000000/link.png"/>
+              </div>
+                <div class="d-inline-block">
+                  <transition name="fade" class="d-inline-block">
+                    <span v-if="show" style="font-size: 20px; color: rgb(138, 138, 218);">link copied</span>
+                  </transition>
+                </div>
+            {% endif %}
+          {% endif %}
+        </h2>
         {% if author.id == user.id %}
         <p><strong>Author</strong>: you ({{ author.username }})</p>  
         {% else %}
@@ -71,6 +92,8 @@
     var url_like = "{% url 'like_ajax_n' %}";
     var url_dislike = "{% url 'dislike_ajax_n' %}";
     var url_inherite = "{% url 'inherite_ajax_n' %}";
+    var url_private_link = "{% url 'create_private_link_n' %}";
+    var url_show_playlist = "{% url 'show_playlist_n' %}"
   </script>
   <script src="{% static '/js/show_playlists.js' %}"></script>
 {% endblock %} 

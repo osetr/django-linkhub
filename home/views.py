@@ -2,13 +2,14 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link, Evaluating, Inheritence, IntroInfo, DeletingTask
+from .models import Playlist, Link, Evaluating, Inheritence, IntroInfo, DeletingTask, PrivateLinks
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
 import re
 from django.http import Http404, JsonResponse
 from datetime import datetime, timedelta
+import uuid
 
 
 def like_ajax(request, pk):
@@ -170,20 +171,6 @@ def restore_playlist_ajax(request, pk):
         return JsonResponse({"response": "success"})
 
 
-def restore_playlist_ajax(request, pk):
-    try:
-        playlist = Playlist.objects.get(pk=pk)
-        playlist.deleted = False
-        DeletingTask.objects.filter(playlist=playlist).delete()
-        playlist.save()
-    except:
-        response = {"response": "failed"}
-    else:
-        response = {"response": "success"}
-    finally:
-        return JsonResponse({"response": "success"})
-
-
 def check_alive_ajax(request, pk):
     try:
         task = DeletingTask.objects.get(playlist_id=pk)
@@ -196,6 +183,13 @@ def check_alive_ajax(request, pk):
         response = {"response": "success", "blur": blur}
     finally:
         return JsonResponse(response)
+
+
+def create_private_link_ajax(request, pk):
+    old_private_link = PrivateLinks.objects.get(playlist_id=pk).delete()
+    private_link = PrivateLinks.objects.create(playlist_id=pk, sharing_pk=uuid.uuid4())
+    response = {"response": str(private_link.sharing_pk)}
+    return JsonResponse(response)
 
 
 class HomeView(View):
@@ -502,25 +496,35 @@ class EditPlaylistView(View):
 class ShowPlaylistView(View):
     def get(self, request, pk):
         try:
-            user_authenticated = request.user.is_authenticated
             playlist = Playlist.objects.get(pk=pk)
-            links = list(Link.objects.filter(playlist_id=playlist.id).values())
-            author = User.objects.get(pk=playlist.author_id)
+        except:
+            try:
+                playlist = PrivateLinks.objects.get(sharing_pk=pk)
+            except:
+                return redirect("show_playlists_n")
+            else:
+                link = PrivateLinks.objects.get(sharing_pk=pk)
+                playlist = link.playlist
+        else:
+            playlist = Playlist.objects.get(pk=pk)
+            if playlist.is_private and playlist.author != request.user:
+                return redirect("show_playlists_n")
 
-            return render(
-                request,
-                "show_playlist.html",
-                context={
-                    "user_authenticated": user_authenticated,
-                    "playlist": playlist,
-                    "links": links,
-                    "author": author,
-                    "pk": pk,
-                },
-            )
-        except Playlist.DoesNotExist:
-            return redirect("show_playlists_n")
+        user_authenticated = request.user.is_authenticated
+        links = list(Link.objects.filter(playlist_id=playlist.id).values())
+        author = User.objects.get(pk=playlist.author_id)
 
+        return render(
+            request,
+            "show_playlist.html",
+            context={
+                "user_authenticated": user_authenticated,
+                "playlist": playlist,
+                "links": links,
+                "author": author,
+                "pk": pk,
+            },
+        )
 
 
 def LogOutView(request):

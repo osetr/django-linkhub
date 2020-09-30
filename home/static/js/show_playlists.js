@@ -2,9 +2,32 @@ obj = new Vue({
     el: '#show_playlists',
     delimiters: ["[[", "]]"],
     data:{
-        opacity: []
+        opacity: [],
+        show: false
     },
     methods: {
+        save_to_clickboard(pk)
+        {
+            $.ajax({
+                type: 'GET',
+                async: false,
+                url: url_private_link + pk,
+                success: function(data) {
+                    str = data['response']
+                },
+                dataType: 'json',
+            });
+            const el = document.createElement('textarea');
+            el.value = '127.0.0.1:8000' + url_show_playlist + str;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            this.show = true;
+        },
         repeat_check(pk){
             $.ajax({
                 type: 'GET',

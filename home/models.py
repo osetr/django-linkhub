@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime, timedelta
 from accounts.models import User
+import uuid
 
 
 class Playlist(models.Model):
@@ -19,6 +20,13 @@ class Playlist(models.Model):
 
     def __str__(self):
         return "%s by %s" % (self.title, self.author)
+
+
+class PrivateLinks(models.Model):
+    sharing_pk = models.UUIDField(primary_key=True, default=uuid.uuid4())
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, default="", editable=False, unique=True
+    )
 
 
 class DeletingTask(models.Model):

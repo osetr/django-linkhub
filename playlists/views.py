@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link, Evaluating, Inheritence, IntroInfo, DeletingTask, PrivateLinks
+from .models import Playlist, Link, Evaluating, Inheritence, DeletingTask, PrivateLinks
+from home.models import IntroInfo
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
 from django.http import JsonResponse, HttpResponse
@@ -10,6 +11,7 @@ import re
 from django.http import Http404, JsonResponse
 from datetime import datetime, timedelta
 import uuid
+from project.settings import DELETING_PLAYLIST_TIME
 
 
 def like_ajax(request, pk):
@@ -146,7 +148,7 @@ def remove_playlist_ajax(request, pk):
         playlist.deleted = True
         task = DeletingTask.objects.create(
             playlist=playlist, 
-            cherished_time=datetime.now() + timedelta(seconds=100)
+            cherished_time=datetime.now() + timedelta(seconds=DELETING_PLAYLIST_TIME)
         )
         playlist.save()
     except:
@@ -176,7 +178,7 @@ def check_alive_ajax(request, pk):
         task = DeletingTask.objects.get(playlist_id=pk)
         time_future = task.cherished_time
         time_now = datetime.now()
-        blur = (time_future-time_now).total_seconds()/100
+        blur = (time_future-time_now).total_seconds()/DELETING_PLAYLIST_TIME
         if blur < 0:
             Playlist.objects.get(pk=pk).delete()
     except:
@@ -196,42 +198,6 @@ def create_private_link_ajax(request, pk):
         private_link = PrivateLinks.objects.create(playlist_id=pk, sharing_pk=uuid.uuid4())
     response = {"response": str(private_link.sharing_pk)}
     return JsonResponse(response)
-
-
-class HomeView(View):
-    """
-        View to show introductory info and availability
-        of site functionality, depending on either user 
-        is authenticated or not.
-    """
-
-    def get(self, request):
-        user_authenticated = request.user.is_authenticated
-        inherited_playlists = []
-        show = True
-
-        if user_authenticated:
-            try:
-                introinfo = IntroInfo.objects.filter(author=request.user).get()
-                show = introinfo.show
-            except IntroInfo.DoesNotExist:
-                introinfo = IntroInfo(author=request.user)
-                introinfo.save()
-            inherited_playlists = list(
-                map(
-                    lambda a: a["playlist_id"],
-                    Inheritence.objects.filter(inherited_by=request.user).values(),
-                )
-            )
-        return render(
-            request,
-            "home.html",
-            context={
-                "user_authenticated": user_authenticated,  # availability of site functionality
-                "active_page": "home",  # separeate active and non active pages on navbar
-                "show": show,  # show ot not introductory info
-            },
-        )
 
 
 class ShowPlaylistsView(View):

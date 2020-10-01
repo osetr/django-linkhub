@@ -10,6 +10,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True
 
+DELETING_PLAYLIST_TIME = 10000
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -22,6 +24,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "accounts",
     "playlists",
+    "home",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -65,7 +68,7 @@ WSGI_APPLICATION = "project.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "linkol",
+        "NAME": "linkhub",
         "USER": "root",
         "PASSWORD": "uawesome120300",
     }

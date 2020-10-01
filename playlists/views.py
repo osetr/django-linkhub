@@ -188,8 +188,12 @@ def check_alive_ajax(request, pk):
 
 
 def create_private_link_ajax(request, pk):
-    old_private_link = PrivateLinks.objects.get(playlist_id=pk).delete()
-    private_link = PrivateLinks.objects.create(playlist_id=pk, sharing_pk=uuid.uuid4())
+    try:
+        old_private_link = PrivateLinks.objects.get(playlist_id=pk).delete()
+    except PrivateLinks.DoesNotExist:
+        print("Link does not exist")
+    finally:
+        private_link = PrivateLinks.objects.create(playlist_id=pk, sharing_pk=uuid.uuid4())
     response = {"response": str(private_link.sharing_pk)}
     return JsonResponse(response)
 

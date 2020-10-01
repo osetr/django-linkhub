@@ -50,12 +50,13 @@ obj = new Vue({
         check_alive(pk){
             this.opacity.push({pk:1});
             this.opacity[pk] = 1
-            setInterval(this.repeat_check, 1000, pk);
+            this.repeat_check(pk)
+            setInterval(this.repeat_check, 10000, pk);
         },
         like(playlist_id) {
             $.ajax({
                 type: 'GET',
-                async: true,
+                async: false,
                 url: url_like + playlist_id,
                 success: function(data) {
                     document.getElementById('like' + playlist_id + '_amount').innerHTML=data['likes_amount'];
@@ -67,7 +68,7 @@ obj = new Vue({
         dislike(playlist_id){
             $.ajax({
                 type: 'GET',
-                async: true,
+                async: false,
                 url: url_dislike + playlist_id,
                 success: function(data) {
                     document.getElementById('like' + playlist_id + '_amount').innerHTML=data['likes_amount'];

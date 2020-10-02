@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from playlists.models import Playlist, Link, Evaluating, Inheritence, DeletingTask, PrivateLinks
+from playlists.models import Playlist, Link, Evaluating, Inheritence, DeletingTask, PrivateLink
 from .models import IntroInfo
 from accounts.models import User
 from django.http import JsonResponse, HttpResponse

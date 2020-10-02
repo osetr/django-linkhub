@@ -22,7 +22,7 @@ class Playlist(models.Model):
         return "%s by %s" % (self.title, self.author)
 
 
-class PrivateLinks(models.Model):
+class PrivateLink(models.Model):
     sharing_pk = models.UUIDField(primary_key=True, default=uuid.uuid4())
     playlist = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default="", editable=False, unique=True

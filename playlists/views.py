@@ -2,7 +2,15 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from .models import Playlist, Link, Evaluating, Inheritence, DeletingTask, PrivateLinks
+from .models import (
+    Playlist, 
+    Link, 
+    Evaluating, 
+    Inheritence, 
+    DeletingTask, 
+    PrivateLink,
+    LinkRelevance
+)
 from home.models import IntroInfo
 from accounts.models import User
 from .forms import AddNewPlaylistForm, AddNewLinkForm
@@ -11,6 +19,7 @@ import re
 from django.http import Http404, JsonResponse
 from datetime import datetime, timedelta
 import uuid
+import requests
 from project.settings import DELETING_PLAYLIST_TIME
 
 
@@ -326,6 +335,11 @@ class AddNewLinkView(View):
             link = form.save(commit=False)
             link.playlist_id = pk
             link.save()
+            if link.check_relevance:
+                LinkRelevance.objects.create(
+                        link = link,
+                        status_code = requests.get(link.link).status_code
+                    )
         return redirect("show_playlists_n")
 
 
@@ -452,14 +466,33 @@ class EditPlaylistView(View):
                     db_link = db_links.get(link=page_link["link"])
                     db_link.description = page_link["description"]
                     db_link.check_relevance = page_link["check_relevance"] == "true"
+                    if db_link.check_relevance:
+                        try:
+                            LinkRelevance.objects.get(link=db_link)
+                        except LinkRelevance.DoesNotExist:
+                            LinkRelevance.objects.create(
+                                link = db_link,
+                                status_code = requests.get(db_link.link).status_code
+                            )
+                    else:
+                        try:
+                            LinkRelevance.objects.get(link=db_link).delete()
+                        except LinkRelevance.DoesNotExist:
+                            print("Link still didn't require checking relevance!")
                     db_link.save()
                 except:
-                    Link.objects.create(
+                    ln = Link.objects.create(
                         link=page_link["link"],
                         description=page_link["description"],
                         check_relevance=page_link["check_relevance"] == "true",
                         playlist_id=pk,
                     )
+                    if ln.check_relevance:
+                        LinkRelevance.objects.create(
+                            link = ln,
+                            status_code = requests.get(ln.link).status_code
+                        )
+
 
             playlist.save()
         return redirect("show_playlists_n")

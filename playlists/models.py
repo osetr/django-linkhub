@@ -51,6 +51,16 @@ class Link(models.Model):
         return "%s in %s" % (self.link, self.playlist)
 
 
+class LinkRelevance(models.Model):
+    link = models.ForeignKey(
+        Link, on_delete=models.CASCADE, default="", editable=False
+    )
+    status_code = models.IntegerField(max_length=3)
+
+    def __str__(self):
+        return "Check relevance for %s" % self.link
+
+
 class Evaluating(models.Model):
     state = models.IntegerField(max_length=1, default=0)
     author = models.ForeignKey(

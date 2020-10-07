@@ -6,8 +6,6 @@ from allauth.account.forms import (
     ResetPasswordForm,
     ResetPasswordKeyForm,
 )
-from django import forms
-from django.urls import reverse
 
 
 class SignUpForm(SignupForm):

@@ -25,7 +25,7 @@ from django.urls import reverse, reverse_lazy
 # all views here are just overrided allauth module views.
 # this approach helps to use benifits of allauth views.
 # overriding is necessary to assign proper forms into views,
-# put corresponding contexts and reassign success url, 
+# put corresponding contexts and reassign success url,
 # depending on case.
 
 
@@ -35,11 +35,11 @@ class SignUpView(SignupView):
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        context = {
+        new_context = {
             "user_authenticated": user_authenticated,
             "active_page": "sign_up"
         }
-        ret.update(context)
+        ret.update(new_context)
         return ret
 
 
@@ -62,12 +62,12 @@ class SignInView(LoginView):
                 errors.append("Incorrect username or password")
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        context = {
+        new_context = {
             "user_authenticated": user_authenticated,
             "active_page": "sign_in",
             "errors": errors,
         }
-        ret.update(context)
+        ret.update(new_context)
         return ret
 
 
@@ -83,11 +83,11 @@ class ChangePasswordView(PasswordChangeView):
         user_authenticated = self.request.user.is_authenticated
         if not self.request.user.has_usable_password():
             return HttpResponseRedirect(reverse("set_password_n"))
-        context = {
+        new_context = {
             "user_authenticated": user_authenticated,
             "active_page": "change_password"
         }
-        context.update(context)
+        context.update(new_context)
         return super(PasswordChangeView, self).render_to_response(
             context, **response_kwargs
         )
@@ -103,11 +103,11 @@ class SetPasswordView(PasswordSetView):
 
     def render_to_response(self, context, **response_kwargs):
         user_authenticated = self.request.user.is_authenticated
-        context = {
+        new_context = {
             "user_authenticated": user_authenticated,
             "active_page": "change_password"
         }
-        context.update(context)
+        context.update(new_context)
         return super(PasswordSetView, self).render_to_response(
             context, **response_kwargs
         )
@@ -120,11 +120,11 @@ class ResetPasswordView(PasswordResetView):
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        context = {
+        new_context = {
             "user_authenticated": user_authenticated,
             "active_page": "reset_password"
         }
-        ret.update(context)
+        ret.update(new_context)
         return ret
 
 

@@ -22,6 +22,11 @@ from allauth.account.views import (
 )
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+# all views here are just overrided allauth module views.
+# this approach helps to use benifits of allauth views.
+# overriding is necessary to assign proper forms into views,
+# put corresponding contexts and reassign success url, 
+# depending on case.
 
 
 class SignUpView(SignupView):

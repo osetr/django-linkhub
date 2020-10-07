@@ -6,6 +6,9 @@ from allauth.account.forms import (
     ResetPasswordForm,
     ResetPasswordKeyForm,
 )
+# all forms from here are just overrided allauth module forms.
+# this approach helps to use benifits of allauth forms
+# and to keep relevant design on the site
 
 
 class SignUpForm(SignupForm):

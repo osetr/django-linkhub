@@ -1,8 +1,8 @@
-from celery.task import periodic_task
 from datetime import datetime, timedelta
 from .models import DeletingTask, Playlist, LinkRelevance
 from django.core.mail import send_mail
 from django.conf import settings
+from celery.task import periodic_task
 import requests
 
 
@@ -15,7 +15,7 @@ def delete_playlist():
             print("Playlist {} was deleted".format(task.playlist.id))
         else:
             print("Waiting")
-    except:
+    except AttributeError:
         print("There is no any work for playlists remover")
 
 
@@ -29,17 +29,23 @@ def check_relevnce():
         author = playlist.author
         if task.status_code != request_status:
             subject = 'Something went wrong'
-            message = 'Check pls link ' + link.link + ' from playlist "' + playlist.title + '". Something happaned with status code!'
+            message = (
+                'Check pls link ' +
+                link.link +
+                ' from playlist "' +
+                playlist.title +
+                '". Something happaned with status code!'
+            )
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [author.email]
-            send_mail( subject, message, email_from, recipient_list)
+            send_mail(subject, message, email_from, recipient_list)
             print("message sended")
             task.delete()
         else:
             task.delete()
             LinkRelevance.objects.create(
-                status_code=request_status, 
+                status_code=request_status,
                 link=link
             )
-    except:
+    except AttributeError:
         print("There is no any work for checking relevance")

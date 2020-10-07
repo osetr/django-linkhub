@@ -27,7 +27,7 @@ class AddNewLinkForm(ModelForm):
         self.fields["description"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter short description"}
         )
-        self.fields["check_relevance"].label = "Send message if link is out of date"
+        self.fields["check_relevance"].label = "Notify me if link is out of date"
 
     class Meta:
         model = Link

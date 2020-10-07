@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime, timedelta
+from datetime import datetime
 from accounts.models import User
 import uuid
 
@@ -15,7 +15,11 @@ class Playlist(models.Model):
     dislikes = models.IntegerField(default=0, editable=False)
     is_private = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False, editable=False)
-    background_color = models.CharField(max_length=8, editable=False, default="#F7F7F7")
+    background_color = models.CharField(
+        max_length=8,
+        editable=False,
+        default="#F7F7F7"
+    )
     inheritences_amount = models.IntegerField(default=0, editable=False)
 
     def __str__(self):
@@ -25,7 +29,11 @@ class Playlist(models.Model):
 class PrivateLink(models.Model):
     sharing_pk = models.UUIDField(primary_key=True, default=uuid.uuid4())
     playlist = models.ForeignKey(
-        Playlist, on_delete=models.CASCADE, default="", editable=False, unique=True
+        Playlist,
+        on_delete=models.CASCADE,
+        default="",
+        editable=False,
+        unique=True
     )
 
 
@@ -33,10 +41,15 @@ class DeletingTask(models.Model):
     playlist = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default="", editable=False
     )
-    cherished_time = models.DateTimeField(default=datetime.now(), editable=False)
+    cherished_time = models.DateTimeField(
+        default=datetime.now(),
+        editable=False
+    )
 
     def __str__(self):
-        return "%s gonna be deleted at %s" % (self.playlist, self.cherished_time)
+        return "%s gonna be deleted at %s" % (
+            self.playlist, self.cherished_time
+        )
 
 
 class Link(models.Model):
@@ -83,5 +96,6 @@ class Inheritence(models.Model):
     )
 
     def __str__(self):
-        return "%s inherited by %s" % (self.playlist.id, self.inherited_by.username)
-
+        return "%s inherited by %s" % (
+            self.playlist.id, self.inherited_by.username
+        )

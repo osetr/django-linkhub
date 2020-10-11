@@ -16,6 +16,7 @@ from .forms import AddNewPlaylistForm, AddNewLinkForm
 import re
 from django.http import Http404, JsonResponse
 from datetime import datetime, timedelta
+from django.core.exceptions import ValidationError
 import uuid
 import requests
 from project.settings import DELETING_PLAYLIST_TIME
@@ -75,23 +76,28 @@ class ShowPlaylistsView(View):
         )
 
     def post(self, request):
-        def filter_by_keys(str, playlists):
+        def filter_by_keys(playlists_keys, playlists):
             """
                 Special function to exctract only required playlists
                 from whole load. Take str with string of keys and playlists.
             """
 
-            def amount_of_occurences(str):
+            def amount_of_occurences(playlist):
                 general_amount = 0
                 for key in playlists_keys.split():
-                    general_amount += len(re.findall(key, str["title"]))
-                    general_amount += len(re.findall(key, str["description"]))
+                    general_amount += len(
+                        re.findall(key, playlist["title"])
+                    )
+                    general_amount += len(
+                        re.findall(key, playlist["description"])
+                    )
                 return general_amount
 
             playlists.sort(
                 key=lambda a: (amount_of_occurences(a), int(a["likes"])),
                 reverse=True
             )
+            playlists = list(filter(amount_of_occurences, playlists))
             return playlists
 
         user_authenticated = request.user.is_authenticated
@@ -132,7 +138,7 @@ class ShowPlaylistsView(View):
 
 class AddNewLinkView(View):
     """
-        View for shortcut page for adding new links in playlistw
+        View for shortcut page for adding new links in playlist
     """
 
     def get(self, request, pk):
@@ -339,13 +345,18 @@ class EditPlaylistView(View):
 
 
 class ShowPlaylistView(View):
+    """
+        View for showing all allowed info to user.
+        If user is not owner of playlist, then he cann't
+        take acces for buttons edit and add new link. 
+    """
     def get(self, request, pk):
         try:
             playlist = Playlist.objects.get(pk=pk)
-        except Playlist.DoesNotExist:
+        except (Playlist.DoesNotExist, ValueError, ValidationError):
             try:
                 playlist = PrivateLink.objects.get(sharing_pk=pk)
-            except PrivateLink.DoesNotExist:
+            except (PrivateLink.DoesNotExist, ValueError, ValidationError):
                 return redirect("show_playlists_n")
             else:
                 link = PrivateLink.objects.get(sharing_pk=pk)
@@ -363,11 +374,11 @@ class ShowPlaylistView(View):
             request,
             "show_playlist.html",
             context={
-                "user_authenticated": user_authenticated,
-                "playlist": playlist,
-                "links": links,
-                "author": author,
-                "pk": pk,
+                "user_authenticated": user_authenticated, # adjust navbar functions
+                "playlist": playlist, # current playlist, which gonna be showed
+                "links": links, # all links from current playlist
+                "author": author, # keep author of playlist
+                "pk": pk, # personal key of playlist for sharing functionality and editing
             },
         )
 

@@ -4,6 +4,7 @@ from accounts.models import User
 import uuid
 
 
+# keeps all info about playlist of links 
 class Playlist(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, default="", editable=False
@@ -26,6 +27,7 @@ class Playlist(models.Model):
         return "%s by %s" % (self.title, self.author)
 
 
+# keeps links between private playlists and it's sharing link
 class PrivateLink(models.Model):
     sharing_pk = models.UUIDField(primary_key=True, default=uuid.uuid4())
     playlist = models.ForeignKey(
@@ -37,6 +39,8 @@ class PrivateLink(models.Model):
     )
 
 
+# keeps time when intented playlist gonna be deleted
+# and is used into celery task for deleting
 class DeletingTask(models.Model):
     playlist = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default="", editable=False
@@ -52,6 +56,7 @@ class DeletingTask(models.Model):
         )
 
 
+# all link's info
 class Link(models.Model):
     link = models.URLField(max_length=128)
     playlist = models.ForeignKey(
@@ -64,6 +69,7 @@ class Link(models.Model):
         return "%s in %s" % (self.link, self.playlist)
 
 
+# is used for celery task for checking if link is out of date
 class LinkRelevance(models.Model):
     link = models.ForeignKey(
         Link, on_delete=models.CASCADE, default="", editable=False
@@ -74,6 +80,9 @@ class LinkRelevance(models.Model):
         return "Check relevance for %s" % self.link
 
 
+# keeping likes/diskikes.
+# -1 dislike
+# +1 like
 class Evaluating(models.Model):
     state = models.IntegerField(max_length=1, default=0)
     author = models.ForeignKey(
@@ -87,6 +96,7 @@ class Evaluating(models.Model):
         return "%s of %s" % (self.author, self.playlist)
 
 
+# keeps info about which playlists are inherited by which user
 class Inheritence(models.Model):
     playlist = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default="", editable=False

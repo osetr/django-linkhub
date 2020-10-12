@@ -20,6 +20,7 @@ from django.core.exceptions import ValidationError
 import uuid
 import requests
 from project.settings import DELETING_PLAYLIST_TIME
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ShowPlaylistsView(View):
@@ -33,47 +34,50 @@ class ShowPlaylistsView(View):
 
     def get(self, request):
         user_authenticated = request.user.is_authenticated
-        playlists = list(
-            Playlist.objects.filter(author=request.user.id).values()
-        )
-
         if user_authenticated:
-            inherited_playlists = list(
-                map(
-                    lambda a: a["playlist_id"],
-                    Inheritence
-                    .objects
-                    .filter(inherited_by=request.user)
-                    .values(),
+            playlists = list(
+                Playlist.objects.filter(author=request.user.id).values()
+            )
+
+            if user_authenticated:
+                inherited_playlists = list(
+                    map(
+                        lambda a: a["playlist_id"],
+                        Inheritence
+                        .objects
+                        .filter(inherited_by=request.user)
+                        .values(),
+                    )
                 )
+            else:
+                inherited_playlists = []
+
+            for playlist_pk in inherited_playlists:
+                playlists.append(Playlist.objects.get(pk=playlist_pk))
+            # at this point we have all playlists(own and inherited)
+            # in on variable "playlists"
+
+            # set html page header and content depending on playlists presence
+            if not playlists:
+                page_header = "Nothing found"
+                list_empty = True
+            else:
+                page_header = "Playlist's list"
+                list_empty = False
+            return render(
+                request,
+                "show_playlists.html",
+                context={
+                    "user_authenticated": user_authenticated,  # set availability of inheritence
+                    "page_header": page_header,  # html page header
+                    "playlists": playlists,  # all playlists (own&inherited)
+                    "active_page": "my_playlists",  # separeate active and non active pages on navbar
+                    "list_empty": list_empty,  # boolean, required for either showing content or not
+                    "inherited_playlists": inherited_playlists,  # check if playlist is allready inherited
+                },
             )
         else:
-            inherited_playlists = []
-
-        for playlist_pk in inherited_playlists:
-            playlists.append(Playlist.objects.get(pk=playlist_pk))
-        # at this point we have all playlists(own and inherited)
-        # in on variable "playlists"
-
-        # set html page header and content depending on playlists presence
-        if not playlists:
-            page_header = "Nothing found"
-            list_empty = True
-        else:
-            page_header = "Playlist's list"
-            list_empty = False
-        return render(
-            request,
-            "show_playlists.html",
-            context={
-                "user_authenticated": user_authenticated,  # set availability of inheritence
-                "page_header": page_header,  # html page header
-                "playlists": playlists,  # all playlists (own&inherited)
-                "active_page": "my_playlists",  # separeate active and non active pages on navbar
-                "list_empty": list_empty,  # boolean, required for either showing content or not
-                "inherited_playlists": inherited_playlists,  # check if playlist is allready inherited
-            },
-        )
+            return redirect("sign_in_n")
 
     def post(self, request):
         def filter_by_keys(playlists_keys, playlists):
@@ -136,10 +140,11 @@ class ShowPlaylistsView(View):
         )
 
 
-class AddNewLinkView(View):
+class AddNewLinkView(LoginRequiredMixin, View):
     """
         View for shortcut page for adding new links in playlist
     """
+    login_url = "/sign_in/"
 
     def get(self, request, pk):
         form = AddNewLinkForm()
@@ -170,13 +175,13 @@ class AddNewLinkView(View):
         return redirect("show_playlists_n")
 
 
-class AddNewPlaylistView(View):
+class AddNewPlaylistView(LoginRequiredMixin, View):
     """
         View for adding new playlists
     """
+    login_url = "/sign_in/"
 
     def get(self, request):
-        form = AddNewPlaylistForm()
         user_authenticated = request.user.is_authenticated
 
         return render(
@@ -184,7 +189,6 @@ class AddNewPlaylistView(View):
             "add_playlist.html",
             context={
                 "user_authenticated": user_authenticated,  # adjust navbar functions
-                "form": form,
             },
         )
 
@@ -199,11 +203,12 @@ class AddNewPlaylistView(View):
         return redirect("show_playlists_n")
 
 
-class EditPlaylistView(View):
+class EditPlaylistView(LoginRequiredMixin, View):
     """
         View for editing info about playlist(title, description)
         and adding new links, and managing old ones
     """
+    login_url = "/sign_in/"
 
     def get(self, request, pk):
         # here we just extract all info about playlist
@@ -385,89 +390,91 @@ class ShowPlaylistView(View):
 
 def like_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
-    try:
-        evaluating = Evaluating.objects.filter(
-            author=request.user, playlist=playlist
-        ).get()
-    except Evaluating.DoesNotExist:
-        evaluating = Evaluating(
-            state=1,
-            author=request.user,
-            playlist=playlist
-        )
-        playlist.likes += 1
-        playlist.save()
-        evaluating.save()
-    else:
-        # if playlist already liked
-        if evaluating.state == 1:
-            playlist.likes -= 1
-            evaluating.state = 0
-            evaluating.save()
-            playlist.save()
-        # if playlist still doesn't have evaluating
-        elif evaluating.state == 0:
+    if request.user.is_authenticated:
+        try:
+            evaluating = Evaluating.objects.filter(
+                author=request.user, playlist=playlist
+            ).get()
+        except Evaluating.DoesNotExist:
+            evaluating = Evaluating(
+                state=1,
+                author=request.user,
+                playlist=playlist
+            )
             playlist.likes += 1
-            evaluating.state = 1
-            evaluating.save()
             playlist.save()
-        # if playlist was disliked
-        elif evaluating.state == -1:
-            playlist.likes += 1
-            playlist.dislikes -= 1
-            evaluating.state = 1
             evaluating.save()
-            playlist.save()
+        else:
+            # if playlist already liked
+            if evaluating.state == 1:
+                playlist.likes -= 1
+                evaluating.state = 0
+                evaluating.save()
+                playlist.save()
+            # if playlist still doesn't have evaluating
+            elif evaluating.state == 0:
+                playlist.likes += 1
+                evaluating.state = 1
+                evaluating.save()
+                playlist.save()
+            # if playlist was disliked
+            elif evaluating.state == -1:
+                playlist.likes += 1
+                playlist.dislikes -= 1
+                evaluating.state = 1
+                evaluating.save()
+                playlist.save()
 
     likes_amount = playlist.likes
     dislikes_amount = playlist.dislikes
     if request.is_ajax():
         response = {
-            "likes_amount":
-            likes_amount,
+            "likes_amount": likes_amount,
             "dislikes_amount": dislikes_amount
         }
-
         return JsonResponse(response)
     else:
         raise Http404
 
 
+
+
 def dislike_ajax(request, pk):
     playlist = Playlist.objects.get(pk=pk)
-    try:
-        evaluating = Evaluating.objects.filter(
-            author=request.user, playlist=playlist
-        ).get()
-    except Evaluating.DoesNotExist:
-        evaluating = Evaluating(
-            state=-1,
-            author=request.user,
-            playlist=playlist
-        )
-        playlist.dislikes += 1
-        playlist.save()
-        evaluating.save()
-    else:
-        # if playlist was liked
-        if evaluating.state == 1:
-            playlist.likes -= 1
+    if request.user.is_authenticated:
+        try:
+            evaluating = Evaluating.objects.filter(
+                author=request.user, playlist=playlist
+            ).get()
+        except Evaluating.DoesNotExist:
+            evaluating = Evaluating(
+                state=-1,
+                author=request.user,
+                playlist=playlist
+            )
             playlist.dislikes += 1
-            evaluating.state = -1
-            evaluating.save()
             playlist.save()
-        # if playlist still doesn't have evaluating
-        elif evaluating.state == 0:
-            playlist.dislikes += 1
-            evaluating.state = -1
             evaluating.save()
-            playlist.save()
-        # if playlist already disliked
-        elif evaluating.state == -1:
-            playlist.dislikes -= 1
-            evaluating.state = 0
-            evaluating.save()
-            playlist.save()
+        else:
+            # if playlist was liked
+            if evaluating.state == 1:
+                playlist.likes -= 1
+                playlist.dislikes += 1
+                evaluating.state = -1
+                evaluating.save()
+                playlist.save()
+            # if playlist still doesn't have evaluating
+            elif evaluating.state == 0:
+                playlist.dislikes += 1
+                evaluating.state = -1
+                evaluating.save()
+                playlist.save()
+            # if playlist already disliked
+            elif evaluating.state == -1:
+                playlist.dislikes -= 1
+                evaluating.state = 0
+                evaluating.save()
+                playlist.save()
 
     likes_amount = playlist.likes
     dislikes_amount = playlist.dislikes

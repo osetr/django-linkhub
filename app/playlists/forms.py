@@ -6,7 +6,7 @@ class AddNewPlaylistForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["title"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Enter title"}
+            {"class": "form-control", "placeholder": "Enter1 title"}
         )
         self.fields["description"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Enter description"}
@@ -22,10 +22,10 @@ class AddNewLinkForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["link"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Enter link"}
+            {"class": "form-control", "placeholder": "Enter link", "autocomplete": "off"}
         )
         self.fields["description"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Enter short description"}
+            {"class": "form-control", "placeholder": "Enter short description", "autocomplete": "off"}
         )
         self.fields["check_relevance"].label = "Notify me if link is out of date"
 

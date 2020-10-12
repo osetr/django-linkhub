@@ -176,7 +176,6 @@ class AddNewPlaylistView(View):
     """
 
     def get(self, request):
-        form = AddNewPlaylistForm()
         user_authenticated = request.user.is_authenticated
 
         return render(
@@ -184,7 +183,6 @@ class AddNewPlaylistView(View):
             "add_playlist.html",
             context={
                 "user_authenticated": user_authenticated,  # adjust navbar functions
-                "form": form,
             },
         )
 

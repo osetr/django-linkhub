@@ -1,0 +1,44 @@
+version: "3"   
+
+volumes:
+        postgres_data:
+
+services:
+        postgresql:
+                image: postgres
+                container_name: postgres
+                restart: always
+                environment:
+                        - POSTGRES_USER=${POSTGRES_USER}
+                        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+                        - POSTGRES_DB=${POSTGRES_DB}
+                volumes:
+                        - postgres_data:/var/lib/postgresql/data/
+                ports:
+                        - 5432:5432
+                expose:
+                        - '5432'
+        app:
+                build: .
+                container_name: app
+                restart: always
+                ports:
+                        - "8000:8000"
+                depends_on:
+                        - postgresql
+                        - redis
+                environment:
+                        - POSTGRES_USER=${POSTGRES_USER}
+                        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+                        - POSTGRES_DB=${POSTGRES_DB}
+                        - SECRET_KEY=${SECRET_KEY}
+                        - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+                entrypoint: /bin/bash -c "./entrypoint.sh;"
+                network_mode: host
+        redis:
+                image: redis:alpine
+                container_name: redis
+                restart: always
+                ports:
+                        - 6379:6379
+                network_mode: host

@@ -12,7 +12,7 @@ DEBUG = True
 
 DELETING_PLAYLIST_TIME = 10000
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -22,9 +22,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    "accounts",
     "playlists",
     "home",
+    "accounts",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",

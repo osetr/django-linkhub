@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.contrib.auth import login, authenticate, logout
 from .forms import (
     SignInForm,
     SignUpForm,
@@ -7,13 +7,26 @@ from .forms import (
     ResetPasswordCustomForm,
     ResetPasswordKeyCustomForm,
 )
-from .models import User
-from django.views.generic import View
 from django.shortcuts import redirect
-from django.contrib.auth import login, authenticate
-from allauth.account.views import *
+from allauth.account.views import (
+    SignupView,
+    LoginView,
+    PasswordChangeView,
+    PasswordSetView,
+    PasswordResetView,
+    PasswordResetDoneView,
+    PasswordResetFromKeyView,
+    PasswordResetFromKeyDoneView,
+    EmailVerificationSentView,
+    ConfirmEmailView
+)
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+# all views here are just overrided allauth module views.
+# this approach helps to use benifits of allauth views.
+# overriding is necessary to assign proper forms into views,
+# put corresponding contexts and reassign success url,
+# depending on case.
 
 
 class SignUpView(SignupView):
@@ -22,7 +35,11 @@ class SignUpView(SignupView):
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        ret.update({"user_authenticated": user_authenticated, "active_page": "sign_up"})
+        new_context = {
+            "user_authenticated": user_authenticated,
+            "active_page": "sign_up"
+        }
+        ret.update(new_context)
         return ret
 
 
@@ -39,19 +56,18 @@ class SignInView(LoginView):
                 if not user.is_active:
                     errors.append("Your account has been deactivated")
                 else:
-                    login(request, user)
+                    login(kwargs['request'], user)
                     return redirect("home_n")
             else:
                 errors.append("Incorrect username or password")
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        ret.update(
-            {
-                "user_authenticated": user_authenticated,
-                "active_page": "sign_in",
-                "errors": errors,
-            }
-        )
+        new_context = {
+            "user_authenticated": user_authenticated,
+            "active_page": "sign_in",
+            "errors": errors,
+        }
+        ret.update(new_context)
         return ret
 
 
@@ -67,9 +83,11 @@ class ChangePasswordView(PasswordChangeView):
         user_authenticated = self.request.user.is_authenticated
         if not self.request.user.has_usable_password():
             return HttpResponseRedirect(reverse("set_password_n"))
-        context.update(
-            {"user_authenticated": user_authenticated, "active_page": "change_password"}
-        )
+        new_context = {
+            "user_authenticated": user_authenticated,
+            "active_page": "change_password"
+        }
+        context.update(new_context)
         return super(PasswordChangeView, self).render_to_response(
             context, **response_kwargs
         )
@@ -85,9 +103,11 @@ class SetPasswordView(PasswordSetView):
 
     def render_to_response(self, context, **response_kwargs):
         user_authenticated = self.request.user.is_authenticated
-        context.update(
-            {"user_authenticated": user_authenticated, "active_page": "change_password"}
-        )
+        new_context = {
+            "user_authenticated": user_authenticated,
+            "active_page": "change_password"
+        }
+        context.update(new_context)
         return super(PasswordSetView, self).render_to_response(
             context, **response_kwargs
         )
@@ -100,9 +120,11 @@ class ResetPasswordView(PasswordResetView):
     def get_context_data(self, **kwargs):
         ret = super().get_context_data(**kwargs)
         user_authenticated = self.request.user.is_authenticated
-        ret.update(
-            {"user_authenticated": user_authenticated, "active_page": "reset_password"}
-        )
+        new_context = {
+            "user_authenticated": user_authenticated,
+            "active_page": "reset_password"
+        }
+        ret.update(new_context)
         return ret
 
 
@@ -125,3 +147,8 @@ class VerificationEmailSentView(EmailVerificationSentView):
 
 class ConfirmEmailView(ConfirmEmailView):
     pass
+
+
+def LogOutView(request):
+    logout(request)
+    return redirect("home_n")

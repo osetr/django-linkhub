@@ -83,10 +83,37 @@
         </table>
         <strong>Description</strong>:</p>
         <p>{{ playlist.description }}</p>
-  </div>
 
+  {% if user_authenticated %}
+    <div class="input-group mb-3">
+      <input id="chat-message-input" class="form-control" type="text" placeholder="Comment">
+      <div class="input-group-append">
+        <input id="chat-message-submit" class="btn btn-outline-info" type="button" value="Send">
+      </div>
+    </div>
+
+    <div id="chat-log" style="margin-bottom: 75px;">
+      {% for comment in comments.values %}
+        <p>
+        <span class='badge badge-info' style="background-color: {{comment.color}}">{{comment.author}}</span>
+          {{comment.message}}
+        </p>
+      {% endfor %}
+    </div>
+    {{ room_name|json_script:"room-name" }}
+  {% else %}
+      <span style="color:yellowgreen">
+        <a style="color:rgb(88, 194, 18)" href="{% url 'sign_in_n' %}">Sign in</a> 
+        if you wish to see comments
+      </span>
+  {% endif %}
+
+  </div>
   {% load static %}
   <script>
+    var current_user_name = "{{ user.username }}";
+    var current_user_id = "{{ user.id }}";
+    var current_playlist_id = "{{ pk }}"
     var url_like = "{% url 'like_ajax_n' %}";
     var url_dislike = "{% url 'dislike_ajax_n' %}";
     var url_inherite = "{% url 'inherite_ajax_n' %}";

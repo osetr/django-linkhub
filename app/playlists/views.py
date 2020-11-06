@@ -8,7 +8,8 @@ from .models import (
     Inheritence,
     DeletingTask,
     LinkRelevance,
-    PrivateLink
+    PrivateLink,
+    Comment
 )
 from home.models import IntroInfo
 from accounts.models import User
@@ -21,6 +22,7 @@ import uuid
 import requests
 from project.settings import DELETING_PLAYLIST_TIME
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .css_colors import CSS_COLORS, colors_amount
 
 
 class ShowPlaylistsView(View):
@@ -375,6 +377,24 @@ class ShowPlaylistView(View):
         links = list(Link.objects.filter(playlist_id=playlist.id).values())
         author = User.objects.get(pk=playlist.author_id)
 
+        # assemble all comments to current playlist
+        comments = (
+            Comment.objects.
+            filter(playlist=playlist).
+            order_by('id').
+            reverse()
+        )
+
+        comments = {
+            comment.id: 
+            {
+                "author": comment.author.username,
+                "message": comment.comment,
+                "color": CSS_COLORS[comment.author.id*3 % colors_amount],
+            }
+            for comment in comments
+        }
+
         return render(
             request,
             "show_playlist.html",
@@ -384,6 +404,8 @@ class ShowPlaylistView(View):
                 "links": links, # all links from current playlist
                 "author": author, # keep author of playlist
                 "pk": pk, # personal key of playlist for sharing functionality and editing
+                "room_name": "room" + pk, # chat-room for current playlist
+                "comments": comments, # comments dict for current playlist
             },
         )
 
@@ -435,8 +457,6 @@ def like_ajax(request, pk):
         return JsonResponse(response)
     else:
         raise Http404
-
-
 
 
 def dislike_ajax(request, pk):

@@ -109,3 +109,19 @@ class Inheritence(models.Model):
         return "%s inherited by %s" % (
             self.playlist.id, self.inherited_by.username
         )
+
+
+# keeps all comments from all playlists
+class Comment(models.Model):
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, default="", editable=False
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, default="", editable=False
+    )
+    comment = models.CharField(max_length=124, blank=False)
+
+    def __str__(self):
+        return "Comment from %s into %s playlist" % (
+            self.author.id, self.playlist.id
+        )

@@ -119,7 +119,7 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, default="", editable=False
     )
-    comment = models.CharField(max_length=124, blank=False)
+    comment = models.CharField(max_length=1024, blank=False)
 
     def __str__(self):
         return "Comment from %s into %s playlist" % (

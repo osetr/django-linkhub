@@ -172,7 +172,7 @@ class AddNewLinkView(LoginRequiredMixin, View):
             if link.check_relevance:
                 LinkRelevance.objects.create(
                     link=link,
-                    status_code=requests.get(link.link).status_code
+                    status_code=0
                 )
         return redirect("show_playlists_n")
 

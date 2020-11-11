@@ -15,6 +15,7 @@ DELETING_PLAYLIST_TIME = 10000
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 INSTALLED_APPS = [
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -25,7 +26,6 @@ INSTALLED_APPS = [
     "playlists",
     "home",
     "accounts",
-    "channels",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -102,6 +102,8 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = "/static/"
+
+STATIC_ROOT = 'full_static/'
 
 ACCOUNT_EMAIL_REQUIRED = True
 

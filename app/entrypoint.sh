@@ -13,6 +13,6 @@ echo "PostgreSQL started"
 sleep 5
 python3 manage.py makemigrations
 python3 manage.py migrate
-python3 manage.py runserver 127.0.0.1:8000 & celery worker -A project.celery -B
+uwsgi --socket :8000 --module project.wsgi -b 32768 & celery worker -A project.celery -B & daphne -b 0.0.0.0 -p 8001 project.asgi:application
 
 exec "$@"

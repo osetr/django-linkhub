@@ -105,7 +105,7 @@ USE_TZ = False
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = 'full_static/'
+STATIC_ROOT = 'static/'
 
 ACCOUNT_EMAIL_REQUIRED = True
 

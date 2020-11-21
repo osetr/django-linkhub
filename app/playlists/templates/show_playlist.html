@@ -65,22 +65,26 @@
           </div>
         </p>
         <h3>Links</h3>
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Link</th>
-              <th>Description</th>
-            </tr>
-            </thead>
-            <tbody id="myTable">
-                {% for link in links %}
-                    <tr>
-                        <th><a href="{{ link.link }}">{{ link.link }}</a></th>
-                        <th>{{ link.description }}</th>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if links %}
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Link</th>
+                <th>Description</th>
+              </tr>
+              </thead>
+              <tbody id="myTable">
+                  {% for link in links %}
+                      <tr>
+                          <th><a href="{{ link.link }}">{{ link.link }}</a></th>
+                          <th>{{ link.description }}</th>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+        {% else %}
+          <span>...</span><br>
+        {% endif %}
         <strong>Description</strong>:</p>
         <p>{{ playlist.description }}</p>
 
@@ -96,7 +100,7 @@
       {% for comment in comments.values %}
         <p>
         <span class='badge badge-info' style="background-color: {{comment.color}}">{{comment.author}}</span>
-          {{comment.message}}
+          {{comment.message}}<span style="font-size: 10px; color: grey; margin-left: 7px;">{{comment.date}}</span>
         </p>
       {% endfor %}
     </div>

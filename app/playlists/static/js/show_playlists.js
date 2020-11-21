@@ -112,7 +112,8 @@ obj = new Vue({
         document.querySelector('#chat-log').innerHTML = 
         "<p><span class='badge badge-info' style='background-color:" + (data.color) + "'>" + 
         (data.user_name) + "</span> " + 
-        (data.message + '\n') + "</p>" + 
+        (data.message + '\n') + 
+        "<span style='font-size: 10px; color: grey; margin-left: 7px;'>" + data.date + "</span></p>" + 
         document.querySelector('#chat-log').innerHTML;
     };
 

@@ -112,7 +112,8 @@ obj = new Vue({
         document.querySelector('#chat-log').innerHTML = 
         "<p><span class='badge badge-info' style='background-color:" + (data.color) + "'>" + 
         (data.user_name) + "</span> " + 
-        (data.message + '\n') + "</p>" + 
+        (data.message + '\n') + 
+        "<span style='font-size: 10px; color: grey; margin-left: 2px;'>" + data.date + "</span></p>" + 
         document.querySelector('#chat-log').innerHTML;
     };
 
@@ -130,11 +131,13 @@ obj = new Vue({
     document.querySelector('#chat-message-submit').onclick = function(e) {
         const messageInputDom = document.querySelector('#chat-message-input');
         const message = messageInputDom.value;
-        chatSocket.send(JSON.stringify({
-            'message': message,
-            'user': current_user_id,
-            'user_name': current_user_name,
-            'playlist': current_playlist_id,
-        }));
+        if (message.length > 0 && message.length < 1024) {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'user': current_user_id,
+                'user_name': current_user_name,
+                'playlist': current_playlist_id,
+            }));
+        }
         messageInputDom.value = '';
     };

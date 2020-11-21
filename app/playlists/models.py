@@ -30,12 +30,11 @@ class Playlist(models.Model):
 # keeps links between private playlists and it's sharing link
 class PrivateLink(models.Model):
     sharing_pk = models.UUIDField(primary_key=True, default=uuid.uuid4())
-    playlist = models.ForeignKey(
+    playlist = models.OneToOneField(
         Playlist,
         on_delete=models.CASCADE,
         default="",
         editable=False,
-        unique=True
     )
 
 
@@ -74,7 +73,7 @@ class LinkRelevance(models.Model):
     link = models.ForeignKey(
         Link, on_delete=models.CASCADE, default="", editable=False
     )
-    status_code = models.IntegerField(max_length=3)
+    status_code = models.IntegerField()
 
     def __str__(self):
         return "Check relevance for %s" % self.link
@@ -84,7 +83,7 @@ class LinkRelevance(models.Model):
 # -1 dislike
 # +1 like
 class Evaluating(models.Model):
-    state = models.IntegerField(max_length=1, default=0)
+    state = models.IntegerField(default=0)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, default="", editable=False
     )
@@ -120,6 +119,10 @@ class Comment(models.Model):
         User, on_delete=models.CASCADE, default="", editable=False
     )
     comment = models.CharField(max_length=1024, blank=False)
+    date = models.DateTimeField(
+        default=datetime.now(),
+        editable=False
+    )
 
     def __str__(self):
         return "Comment from %s into %s playlist" % (

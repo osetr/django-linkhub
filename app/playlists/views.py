@@ -385,11 +385,20 @@ class ShowPlaylistView(View):
             reverse()
         )
 
+        def process_date(date):
+            return {
+                date.day == datetime.now().day: date.time().strftime("%I:%M %P"),
+                date.day == datetime.now().day - 1: 'yesterday ' + date.time().strftime("%I:%M %P"),
+                date.day < datetime.now().day -1: date
+            }[True]
+
+
         comments = {
             comment.id: 
             {
                 "author": comment.author.username,
                 "message": comment.comment,
+                "date": process_date(comment.date),
                 "color": CSS_COLORS[comment.author.id*3 % colors_amount],
             }
             for comment in comments

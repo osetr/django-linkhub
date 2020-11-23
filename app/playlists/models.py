@@ -44,10 +44,7 @@ class DeletingTask(models.Model):
     playlist = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default="", editable=False
     )
-    cherished_time = models.DateTimeField(
-        default=datetime.now(),
-        editable=False
-    )
+    cherished_time = models.DateTimeField()
 
     def __str__(self):
         return "%s gonna be deleted at %s" % (
@@ -119,10 +116,7 @@ class Comment(models.Model):
         User, on_delete=models.CASCADE, default="", editable=False
     )
     comment = models.CharField(max_length=1024, blank=False)
-    date = models.DateTimeField(
-        default=datetime.now(),
-        editable=False
-    )
+    date = models.DateTimeField()
 
     def __str__(self):
         return "Comment from %s into %s playlist" % (

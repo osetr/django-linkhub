@@ -86,22 +86,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-    "/var/www/static/",
-)
-
 SITE_ID = 1
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Kiev"
 
 USE_I18N = True
 
 USE_L10N = True
-
-USE_TZ = False
 
 STATIC_URL = "/static/"
 

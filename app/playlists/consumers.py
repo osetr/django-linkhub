@@ -4,7 +4,7 @@ from channels.generic.websocket import WebsocketConsumer
 from .models import Comment
 from .css_colors import CSS_COLORS, colors_amount
 from datetime import datetime
-
+from django.utils import timezone
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -35,7 +35,7 @@ class ChatConsumer(WebsocketConsumer):
         user_name = text_data_json['user_name']
         # print(text_data_json['message'], text_data_json['user'], text_data_json['playlist'])
         try:
-            Comment.objects.create(
+            obj = Comment.objects.create(
                 playlist_id=playlist,
                 author_id=user,
                 comment=message,
@@ -47,7 +47,7 @@ class ChatConsumer(WebsocketConsumer):
                     'type': 'chat_message',
                     'message': message,
                     'user_name': user_name,
-                    'date': str(datetime.now().strftime("%I:%M %P")),
+                    'date': str(obj.date.strftime("%I:%M %P")),
                     'color': CSS_COLORS[int(user)*3 % colors_amount],
                 }
             )

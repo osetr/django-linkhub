@@ -4,11 +4,11 @@
 {% block content %}
   <style type='text/css'>
     .fade-enter-active, .fade-leave-active {
-    transition: opacity .3s;
-  }
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
-  }
+      transition: opacity .3s;
+    }
+    .fade-enter, .fade-leave-to {
+      opacity: 0;
+    }
   </style>
   <div id="show_playlists">
         {% if playlist.author_id == user.id %}
@@ -88,7 +88,7 @@
         <strong>Description</strong>:</p>
         <p>{{ playlist.description }}</p>
 
-  {% if user_authenticated %}
+  {% if user_authenticated and not playlist.is_private %}
     <div class="input-group mb-3">
       <input id="chat-message-input" class="form-control" type="text" placeholder="Comment">
       <div class="input-group-append">
@@ -105,6 +105,10 @@
       {% endfor %}
     </div>
     {{ room_name|json_script:"room-name" }}
+  {% elif playlist.is_private %}
+  <span style="color:yellowgreen">
+    Comments are not available for private playlists.
+  </span>
   {% else %}
       <span style="color:yellowgreen">
         <a style="color:rgb(88, 194, 18)" href="{% url 'sign_in_n' %}">Sign in</a> 

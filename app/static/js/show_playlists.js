@@ -18,7 +18,7 @@ obj = new Vue({
                 dataType: 'json',
             });
             const el = document.createElement('textarea');
-            el.value = '127.0.0.1:8000' + url_show_playlist + str;
+            el.value = window.location.host + url_show_playlist + str;
             el.setAttribute('readonly', '');
             el.style.position = 'absolute';
             el.style.left = '-9999px';

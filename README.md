@@ -7,4 +7,4 @@
   
   If you are going just do searching through existing playlists, it's not necessary to get own account. But it's required in case you want to create your own playlists and to add new links into them, or just rate existing playlists. Note, that during signing up, email address is required, as we are going to keep in touch with users, when they wish to track relevance of their links. That's why we even include email verification, as you might have noticed. If you signed in with Google, that's mean that you'll recieve emails onto your gmail. Also email is required during procedure of resetting forgotten password.
 
-(linkolhub.ml)[https://linkolhub.ml/]
+[linkolhub.ml](https://linkolhub.ml/)

@@ -73,7 +73,7 @@ class SignInView(LoginView):
 
 class ChangePasswordView(PasswordChangeView):
     def get_success_url(self):
-        return "/home"
+        return "/"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,7 +95,7 @@ class ChangePasswordView(PasswordChangeView):
 
 class SetPasswordView(PasswordSetView):
     def get_success_url(self):
-        return "/home"
+        return "/"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

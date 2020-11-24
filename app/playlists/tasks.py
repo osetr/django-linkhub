@@ -6,7 +6,7 @@ from celery.task import periodic_task
 import requests
 
 
-@periodic_task(run_every=timedelta(seconds=10), name="delete_playlist")
+@periodic_task(run_every=timedelta(seconds=5), name="delete_playlist")
 def delete_playlist():
     try:
         task = DeletingTask.objects.first()
@@ -19,33 +19,53 @@ def delete_playlist():
         print("There is no any work for playlists remover")
 
 
-@periodic_task(run_every=timedelta(seconds=10), name="check_relevance")
+@periodic_task(run_every=timedelta(seconds=15), name="check_relevance")
 def check_relevnce():
     try:
         task = LinkRelevance.objects.first()
-        request_status = requests.get(task.link.link).status_code
         link = task.link
         playlist = link.playlist
         author = playlist.author
-        if task.status_code != request_status:
-            subject = 'Something went wrong'
+
+        try:
+            request_status = requests.get(task.link.link).status_code
+        except:
+            send_message = True
             message = (
                 'Check pls link ' +
                 link.link +
                 ' from playlist "' +
                 playlist.title +
-                '". Something happaned with status code!'
+                '". There are some issues with it!'
             )
-            email_from = settings.EMAIL_HOST_USER
-            recipient_list = [author.email]
-            send_mail(subject, message, email_from, recipient_list)
-            print("message sended")
-            task.delete()
         else:
-            task.delete()
-            LinkRelevance.objects.create(
-                status_code=request_status,
-                link=link
-            )
+            if not task.status_code:
+                task.status_code = request_status
+                print("Status code was created!")
+                send_message = False
+            elif task.status_code != request_status:
+                message = (
+                    'Check pls link ' +
+                    link.link +
+                    ' from playlist "' +
+                    playlist.title +
+                    '". Something happaned with status code!'
+                )
+                send_message = True
+            else:
+                send_message = False
+        finally:
+            if send_message:
+                subject = 'Something went wrong'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [author.email]
+                send_mail(subject, message, email_from, recipient_list)
+                print("Message sended")
+                link.check_relevance = 0
+                link.save()
+                task.delete()
+            else:
+                task.delete()
+                task.save()
     except AttributeError:
         print("There is no any work for checking relevance")

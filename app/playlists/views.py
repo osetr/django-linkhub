@@ -19,7 +19,6 @@ from django.http import Http404, JsonResponse
 from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
 import uuid
-import requests
 from project.settings import DELETING_PLAYLIST_TIME
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .css_colors import CSS_COLORS, colors_amount
@@ -324,9 +323,7 @@ class EditPlaylistView(LoginRequiredMixin, View):
                         except LinkRelevance.DoesNotExist:
                             LinkRelevance.objects.create(
                                 link=db_link,
-                                status_code=requests
-                                .get(db_link.link)
-                                .status_code
+                                status_code=0
                             )
                     else:
                         try:
@@ -344,7 +341,7 @@ class EditPlaylistView(LoginRequiredMixin, View):
                     if ln.check_relevance:
                         LinkRelevance.objects.create(
                             link=ln,
-                            status_code=requests.get(ln.link).status_code
+                            status_code=0
                         )
 
             playlist.save()

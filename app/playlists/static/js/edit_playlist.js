@@ -20,7 +20,7 @@ obj = new Vue({
 
         deleteLink(val) {
           for (var i = 0; i < this.todos.length; i++)
-            if (this.todos[i].id === val) 
+            if (this.todos[i].link === val.link) 
             {
                 this.todos.splice(i,1);
                 break;

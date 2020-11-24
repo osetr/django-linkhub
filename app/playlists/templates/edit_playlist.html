@@ -38,7 +38,7 @@
       <li v-for="todo in todos" style="margin-top: 20px; border: 1px solid rgb(218, 174, 174); padding: 10px; border-radius: 5px;background-color: rgb(255, 244, 244);">
         <a v-bind:href="todo.link">[[ todo.link ]]</a>
         <div class="form-group mb-2 float-right">
-          <button @click="deleteLink(todo.id)" class="btn btn-outline-danger" style="border: none; padding: 3px;">Delete link</button>
+          <button @click="deleteLink(todo)" class="btn btn-outline-danger" style="border: none; padding: 3px;">Delete link</button>
         </div>
         <div class="form-group mb-2">
           <input v-model="todo.description" placeholder="Add description if necessary" class="form-control">

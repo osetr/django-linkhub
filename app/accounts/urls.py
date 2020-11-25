@@ -10,7 +10,8 @@ from .views import (
     ResetPasswordDoneView,
     ResetPasswordFromKeyView,
     ResetPasswordFromKeyDoneView,
-    LogOutView
+    LogOutView,
+    ChangeUsername
 )
 
 
@@ -28,7 +29,12 @@ urlpatterns = [
     path(
         r"settings/",
         ChangePasswordView.as_view(),
-        name="change_password_n"
+        name="settings_n"
+    ),
+    path(
+        r"settings/<error>",
+        ChangePasswordView.as_view(),
+        name="settings_n"
     ),
     path(
         r"set_password/",
@@ -44,6 +50,11 @@ urlpatterns = [
         r"confirm-email/",
         VerificationEmailSentView.as_view(),
         name="account_email_verification_sent",
+    ),
+    path(
+        r"change_username/",
+        ChangeUsername.as_view(),
+        name="change_username_n"
     ),
     re_path(
         r"^confirm-email/(?P<key>[-:\w]+)/$",

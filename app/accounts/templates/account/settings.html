@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+    <h2 class="h2" id="head_banner">{% trans "Settings" %}</h2>
+
+    <hr style="border-color:blue">
+
+    <h4 class="h4" id="head_banner">{% trans "Change Username" %}</h4>
+    <br>
+    <form method="POST" action="/change_username/">
+      {% csrf_token %}
+      <div class="form-group">
+        <input class="form-control" name="username" autocomplete="off" placeholder="Current username: `{{ username }}`">
+      </div>
+      {% if username_error %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+          {{ username_error }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
+    <button class="btn btn-outline-secondary" type="submit" name="action">{% trans "Change Username" %}</button>
+    </form>
+    <br>
+    
+    <hr style="border-color:blue">
+
+    <h4 class="h4" id="head_banner">{% trans "Change Password" %}</h4>
+    <span>Use this form to change password. But notice, after changing password you will be loged out.</span><br>
+    <br>
+    <form method="POST" id="change_password_form" name="hi">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                {{ error }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      {% endfor %}
+    <button class="btn btn-outline-secondary" type="submit" name="action">{% trans "Change Password" %}</button>
+    </form>
+    <br>
+
+    <hr style="border-color:blue">
+
+    <h4 class="h4" id="head_banner">{% trans "Notifications" %}</h4>
+    <br>
+    <span>Send notifications to:</span><br>
+    <div class="custom-control custom-radio custom-control-inline" style="margin: 20px; margin-left: 0px;">
+      <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+      <label class="custom-control-label" for="customRadioInline1">Email</label>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline" style="margin: 20px;">
+      <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+      <label class="custom-control-label" for="customRadioInline2">Home page</label>
+    </div>
+    <br>
+
+    <br>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="customSwitch1">
+      <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
+    </div>
+    <br>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="customSwitch2">
+      <label class="custom-control-label" for="customSwitch2">Toggle this switch element</label>
+    </div>
+    <br>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="customSwitch3">
+      <label class="custom-control-label" for="customSwitch3">Toggle this switch element</label>
+    </div>
+    <br>
+
+    <hr style="border-color:blue">
+
+    <h4 class="h4" id="head_banner">{% trans "Delete Account" %}</h4>
+    <p><b>Note</b>, after clicking delete account, you will turn your account to inactive stage. <b>After 24 hours</b> in inactive stage account <b>will be deleted at all</b>.</p>
+    <button class="btn btn-danger">Delete account</button>
+
+
+    <br>
+    <br>
+    <br>
+    
+{% endblock %}

@@ -7,6 +7,7 @@ from .forms import (
     ResetPasswordCustomForm,
     ResetPasswordKeyCustomForm,
 )
+from django.views.generic import View
 from django.shortcuts import redirect
 from allauth.account.views import (
     SignupView,
@@ -22,6 +23,7 @@ from allauth.account.views import (
 )
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.db.utils import IntegrityError
 # all views here are just overrided allauth module views.
 # this approach helps to use benifits of allauth views.
 # overriding is necessary to assign proper forms into views,
@@ -71,7 +73,24 @@ class SignInView(LoginView):
         return ret
 
 
+class ChangeUsername(View):
+    def post(self, request):
+        user = request.user
+        user.username = request.POST['username']
+        try:
+            user.save()
+            return redirect("settings_n")
+        except:
+            return redirect(
+                reverse(
+                    "settings_n",
+                    kwargs={'error': 'Username already in use'}
+                )
+            )
+
+
 class ChangePasswordView(PasswordChangeView):
+    template_name = "account/settings.html"
     def get_success_url(self):
         return "/"
 
@@ -80,12 +99,15 @@ class ChangePasswordView(PasswordChangeView):
         self.form_class = ChangePasswordCustomForm
 
     def render_to_response(self, context, **response_kwargs):
+        username_change_error = self.request.resolver_match.kwargs.get('error', '')
         user_authenticated = self.request.user.is_authenticated
         if not self.request.user.has_usable_password():
             return HttpResponseRedirect(reverse("set_password_n"))
         new_context = {
             "user_authenticated": user_authenticated,
-            "active_page": "settings"
+            "active_page": "settings",
+            "username": self.request.user.username,
+            "username_error": username_change_error,
         }
         context.update(new_context)
         return super(PasswordChangeView, self).render_to_response(

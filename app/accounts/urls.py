@@ -26,7 +26,7 @@ urlpatterns = [
         name="sign_in_n"
     ),
     path(
-        r"change_password/",
+        r"settings/",
         ChangePasswordView.as_view(),
         name="change_password_n"
     ),

@@ -85,7 +85,7 @@ class ChangePasswordView(PasswordChangeView):
             return HttpResponseRedirect(reverse("set_password_n"))
         new_context = {
             "user_authenticated": user_authenticated,
-            "active_page": "change_password"
+            "active_page": "settings"
         }
         context.update(new_context)
         return super(PasswordChangeView, self).render_to_response(
@@ -105,7 +105,7 @@ class SetPasswordView(PasswordSetView):
         user_authenticated = self.request.user.is_authenticated
         new_context = {
             "user_authenticated": user_authenticated,
-            "active_page": "change_password"
+            "active_page": "settings"
         }
         context.update(new_context)
         return super(PasswordSetView, self).render_to_response(

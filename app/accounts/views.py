@@ -21,9 +21,11 @@ from allauth.account.views import (
     EmailVerificationSentView,
     ConfirmEmailView
 )
+from .models import DeletingAccountProcess
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.db.utils import IntegrityError
+from django.http import Http404, JsonResponse
 # all views here are just overrided allauth module views.
 # this approach helps to use benifits of allauth views.
 # overriding is necessary to assign proper forms into views,
@@ -103,11 +105,19 @@ class ChangePasswordView(PasswordChangeView):
         user_authenticated = self.request.user.is_authenticated
         if not self.request.user.has_usable_password():
             return HttpResponseRedirect(reverse("set_password_n"))
+
+        try:
+            DeletingAccountProcess.objects.get(user=self.request.user)
+            account_process_deleting = True
+        except DeletingAccountProcess.DoesNotExist:
+            account_process_deleting = False        
+
         new_context = {
             "user_authenticated": user_authenticated,
             "active_page": "settings",
             "username": self.request.user.username,
             "username_error": username_change_error,
+            "account_process_deleting": account_process_deleting,
         }
         context.update(new_context)
         return super(PasswordChangeView, self).render_to_response(
@@ -174,3 +184,17 @@ class ConfirmEmailView(ConfirmEmailView):
 def LogOutView(request):
     logout(request)
     return redirect("home_n")
+
+
+def delete_account_ajax(request):
+    try:
+        DeletingAccountProcess.objects.get(user=request.user).delete()
+        action = "Deleting process suspended"
+    except DeletingAccountProcess.DoesNotExist:
+        DeletingAccountProcess.objects.create(user=request.user)
+        action = "Deleting process started"
+    if request.is_ajax():
+        response = {"response": "success", "action": action}
+        return JsonResponse(response)
+    else:
+        raise Http404

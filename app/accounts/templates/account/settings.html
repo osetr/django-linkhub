@@ -3,6 +3,7 @@
 
 
 {% block content %}
+  <div id="settings">
     <h2 class="h2" id="head_banner">{% trans "Settings" %}</h2>
 
     <hr style="border-color:blue">
@@ -89,11 +90,18 @@
 
     <h4 class="h4" id="head_banner">{% trans "Delete Account" %}</h4>
     <p><b>Note</b>, after clicking delete account, you will turn your account to inactive stage. <b>After 24 hours</b> in inactive stage account <b>will be deleted at all</b>.</p>
-    <button class="btn btn-danger">Delete account</button>
+    <button v-if="account_deleted" id="deleting_account_button" @click="delete_account" class="btn btn-danger">Suspend deleting</button>
+    <button v-if="!account_deleted" id="deleting_account_button" @click="delete_account" class="btn btn-danger">Delete account</button>
 
+    <br>
+    <br>
+    <br>
+  </div>
 
-    <br>
-    <br>
-    <br>
-    
+  {% load static %}
+  <script>
+    var account_deleted = "{{ account_process_deleting }}" == "True"
+    var url_delete_account = "{% url 'delete_account_n' %}"
+  </script>
+  <script src="{% static '/js/settings.js' %}"></script>
 {% endblock %}

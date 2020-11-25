@@ -11,7 +11,8 @@ from .views import (
     ResetPasswordFromKeyView,
     ResetPasswordFromKeyDoneView,
     LogOutView,
-    ChangeUsername
+    ChangeUsername,
+    delete_account_ajax,
 )
 
 
@@ -77,4 +78,5 @@ urlpatterns = [
         name="reset_password_from_key_done_n",
     ),
     path(r"logout/", LogOutView, name="logout_n"),
+    path(r"ajax/delete_account", delete_account_ajax, name="delete_account_n")
 ]

@@ -91,7 +91,7 @@ class ChangeUsername(View):
             )
 
 
-class ChangePasswordView(PasswordChangeView):
+class SettingsView(PasswordChangeView):
     template_name = "account/settings.html"
     def get_success_url(self):
         return "/"

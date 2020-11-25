@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from .views import (
     SignUpView,
     SignInView,
-    ChangePasswordView,
+    SettingsView,
     SetPasswordView,
     ResetPasswordView,
     VerificationEmailSentView,
@@ -29,12 +29,12 @@ urlpatterns = [
     ),
     path(
         r"settings/",
-        ChangePasswordView.as_view(),
+        SettingsView.as_view(),
         name="settings_n"
     ),
     path(
         r"settings/<error>",
-        ChangePasswordView.as_view(),
+        SettingsView.as_view(),
         name="settings_n"
     ),
     path(
